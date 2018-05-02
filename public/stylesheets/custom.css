@@ -16,4 +16,6 @@
     width: 50px;
     text-align: center;
 }
-
+.input-game-started input{
+    background-color: gold!important;
+}

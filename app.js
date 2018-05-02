@@ -26,7 +26,7 @@ var app = express();
 
 
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'ungrainderizsemécentrécoltés',
   resave: false,
   saveUninitialized: true,
   cookie: { maxAge:3600000}

@@ -35,8 +35,10 @@ html(lang='en')
             img.brand-img(src='/dist/img/logo.png', alt='brand')
             span.brand-text NIGER FOOT
         .pull-right.mt-10
-          button.btn.btn-success Valider mes pronostics
+          button#submit_prono.btn.btn-success(type='submit' form='pronoform') Valider mes pronostics
           a.button.btn.btn-warning.ml-50(href='/logout') Déconnexion
+      .container
+      !=messages()
       // Main Content
       .page-wrapper
         .container-fluid.pt-25
@@ -52,26 +54,31 @@ html(lang='en')
                             .profile-image-overlay
                           .profile-info.text-center
                             .profile-img-wrap
-                              img.inline-block.mb-10(src='/dist/img/mock1.jpg', alt='user')
+                              img.inline-block.mb-10(src='/dist/img/mock1.jpg', alt='user photo')
                               .fileupload.btn.btn-default
                                 span.btn-text edit
                                 input.upload(type='file')
                             h5.block.mt-10.mb-5.weight-500.capitalize-font.txt-danger #{user.username}
                             h6.block.pb-20.text-lowercase @#{user.userpseudo}
+                            
+                            label(class='userid' data-userid='#{user._id}' hidden='')
                           .social-info
                             .row
                               .col-xs-12.text-center
                                 span.counts.block.head-font
                                   span.counter-anim 345
                                 span.counts-text.block Classement Général
-                              .col-xs-12.text-center
-                                span.counts.block.head-font
-                                  span.counter-anim 246
-                                span.counts-text.block Classement Groupe 1
-                              .col-xs-12.text-center
-                                span.counts.block.head-font
-                                  span.counter-anim 898
-                                span.counts-text.block Classement Groupe 2
+                              if (mongroupe)
+                                .col-xs-12.text-center
+                                  span.counts.block.head-font
+                                    span.counter-anim 246
+                                  span.counts-text.block #{mongroupe.groupname}
+                              if (groupes)
+                                each group in groupes
+                                  .col-xs-12.text-center
+                                    span.counts.block.head-font
+                                      span.counter-anim 898
+                                    span.counts-text.block #{group.groupname}
                             button.btn.btn-default.btn-block.btn-outline.btn-anim.mt-30(data-toggle='modal', data-target='#myModal')
                               i.fa.fa-pencil
                               span.btn-text edit profile
@@ -90,7 +97,7 @@ html(lang='en')
                                             .panel-body.pa-0
                                               .col-sm-12.col-xs-12
                                                 .form-wrap
-                                                  form(action='#')
+                                                  form(method='POST' action='')
                                                     .form-body.overflow-hide
                                                       .form-group
                                                         label.control-label.mb-10(for='exampleInputuname_1') Name
@@ -148,7 +155,7 @@ html(lang='en')
                         .tab-struct.custom-tab-1
                           ul#myTabs_8.nav.nav-tabs.nav-tabs-responsive(role='tablist')
                             li.active(role='presentation')
-                              a#profile_tab_8(data-toggle='tab', role='tab', href='#profile_8', aria-expanded='false')
+                              a#games_tab_8(data-toggle='tab', role='tab', href='#gameslisting', aria-expanded='false')
                                 span Pronostics
                             li.next(role='presentation')
                               a#follo_tab_8(aria-expanded='true', data-toggle='tab', role='tab', href='#follo_8')
@@ -166,11 +173,11 @@ html(lang='en')
                                 span Résultats
                             li.dropdown(role='presentation')
                               a#myTabDrop_7.dropdown-toggle(data-toggle='dropdown', href='#', aria-expanded='false')
-                                span More
+                                span Plus...
                                 span.caret
                               ul#myTabDrop_7_contents.dropdown-menu
                                 li
-                                  a#dropdown_13_tab(data-toggle='tab', role='tab', href='#dropdown_13', aria-expanded='true') About
+                                  a#dropdown_13_tab(data-toggle='tab', role='tab', href='#groupform', aria-expanded='true') Créer un groupe
                                 li
                                   a#dropdown_14_tab(data-toggle='tab', role='tab', href='#dropdown_14', aria-expanded='false') Followings
                                 li
@@ -178,46 +185,65 @@ html(lang='en')
                                 li
                                   a#dropdown_16_tab(data-toggle='tab', role='tab', href='#dropdown_16', aria-expanded='false') Reviews
                           #myTabContent_8.tab-content
-                            #profile_8.tab-pane.fade.active.in(role='tabpanel')
+                            #gameslisting.tab-pane.fade.active.in(role='tabpanel')
                               .col-md-12
                                 .pt-20
                                   .streamline.user-activity
                                     .sl-item
-                                      .col-md-12.col-sm-12.pt-20.pl-0.pr-0(style='    display: -webkit-inline-box;\
+                                      .col-md-12.col-sm-12.pt-20.pl-0.pr-0(style='display: -webkit-inline-box;\
                                       ')
-                                        table.datedumatch.mb-10.ml-15
-                                          thead
-                                            tr(style=' border-bottom:solid 5px')
-                                              th 14 JUIN 2018
-                                              th
-                                              th.pl-50 Pronostic
-                                          tbody
-                                            tr
-                                              td.pr-50
-                                                label(for='')
-                                                  p 18:00
-                                                  p Groupe A
-                                              td
-                                                label(for='')
-                                                  img.flag-size(src='/dist/img/country/01-flag.png', ;='', alt='')
-                                                  h3.team-name RÉPUBLIQUE DE CORÉE
-                                                  input.input-team-score(type='Number', value='0', disabled='')
-                                              td.pl-50.pr-50(style='vertical-align: middle;')
-                                                label(for='')
-                                                  input.input-team-score(type='Tel', min='0', max='15', maxlength='2')
-                                            tr
-                                              td.pr-50
-                                                label(for='')
-                                                  p Stade Loujniki
-                                                  p Moscou
-                                              td
-                                                label(for='')
-                                                  img.flag-size(src='/dist/img/country/02-flag.png', ;='', alt='')
-                                                  h3.team-name ALLEMAGNE
-                                                  input.input-team-score(type='Number', value='0', disabled='')
-                                              td.pl-50.pr-50(style='vertical-align: middle;')
-                                                label(for='')
-                                                  input.input-team-score(type='Tel', min='0', max='15', maxlength='2')
+                                        form(method='POST' action='/users/update-pronostic' id='pronoform')
+                                            table.table-responsive.datedumatch.mb-10.ml-15
+                                              - const monthNames = ["Janvier","Fevrier","Mars","Avril","Mai", "Juin","Juillet", "Aout","Septembre","Octobre","Novembre","Decembre"];
+
+                                              each game in list_games
+                                                  - var score1value = user.userprono['prteam'+game.gamenumber+'1'];
+                                                  - var score2value = user.userprono['prteam'+game.gamenumber+'2'];
+                                                  
+                                                  thead
+                                                    tr(style=' border-bottom:solid 5px')
+                                                      th 
+                                                        - var dateg = new Date(game.gamedate)
+                                                        - dategame = dateg.getDate() + ' ' + monthNames[dateg.getMonth()]
+                                                        | #{dategame}
+                                                      th
+                                                      th
+                                                      th.pl-50 Pronostic
+                                                  tbody.gamebody(data-gameid='#{game._id}')
+                                                    tr
+                                                      td.pr-50
+                                                        label(for='')
+                                                          p 
+                                                            - hourgame = dateg.getHours() + ' : 0' + dateg.getMinutes()
+                                                            | #{hourgame}
+                                                          p Groupe #{game.team1.teamgroup}
+                                                      td
+                                                        label(for='')
+                                                          img.flag-size(src='/img/teams/#{game.team1.teamname}.png', alt='')
+                                                          h3.team-name #{game.team1.teamname}
+
+                                                      td.pl-50.pr-50(style='vertical-align: middle;')
+                                                        label(for='')
+                                                          input.input-team-score(type='Number', value='0', disabled='')
+                                                      td.pl-50.pr-50(style='vertical-align: middle;')
+                                                        label(for='')
+                                                          input.input-team-score.prteam1(type='Tel', name='prteam#{game.gamenumber}1' min='0', max='15', maxlength='2' id='prteam1#{game._id}' readonly=(false===game.started ? false : 'readonly') style=(false===game.started ? '' : 'background-color:gold') value=(undefined===user ? '' : score1value))
+                                                    tr
+                                                      td.pr-50
+                                                        label(for='')
+                                                          p #{game.gamestadium}
+                                                          p #{game.gameplace}
+                                                      td
+                                                        label(for='')
+                                                          img.flag-size(src='/img/teams/#{game.team2.teamname}.png', alt='')
+                                                          h3.team-name #{game.team2.teamname}
+                                                      td.pl-50.pr-50(style='vertical-align: middle;')
+                                                        label(for='')
+                                                          input.input-team-score(type='Number', value='0', disabled='')
+                                                      td.pl-50.pr-50(style='vertical-align: middle;')
+                                                        label(for='')
+                                                          input.input-team-score.prteam2(type='Tel', name='prteam#{game.gamenumber}2', min='0', max='15', maxlength='2' id='prteam2#{game._id}' readonly=(false===game.started ? false : true) style=(false===game.started ? '' : 'background-color:gold') value=(undefined===user ? '' : score2value))
+                                            
                                       //
                                         <a href="javascript:void(0)">
                                         <div class="sl-avatar avatar avatar-sm avatar-circle">
@@ -288,11 +314,11 @@ html(lang='en')
                               // Row
                               .row
                                 .col-lg-12
-                                  .row
-                                    .col-lg-12
-                                      .followers-wrap
-                                        .row.pb-10.pl-30
-                                          p(style=' border-bottom:solid 5px') Groupe FENIFOOT
+                                  .followers-wrap
+                                    if(mongroupe)
+                                      .row.pb-10.pl-30
+                                        p(style=' border-bottom:solid 5px') #{mongroupe.groupname}
+                                      if (mongroupe.joinedUsers)
                                         ul.followers-list-wrap
                                           li.follow-list
                                             .follo-body
@@ -301,13 +327,69 @@ html(lang='en')
                                                   h4 #1
                                                 img.user-img.img-circle(src='/dist/img/user.png', alt='user')
                                                 .user-data
-                                                  span.name.block.capitalize-font Clay Masse
+                                                  span.name.block.capitalize-font #{user.userpseudo}
                                                   // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
                                                 .pull-right.mr-15
                                                   span 2500
                                                   span  Points
                                                 // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                 .clearfix
+                                          - var i = 2;
+                                          each groupmate in mongroupe.joinedUsers
+                                            li.follow-list
+                                            .follo-body
+                                              .follo-data
+                                                #rang.pull-left.pl-30.pr-30
+                                                  h4 ##{i}
+                                                img.user-img.img-circle(src='/dist/img/user.png', alt='user')
+                                                .user-data
+                                                  span.name.block.capitalize-font #{groupmate.userpseudo}
+                                                  // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
+                                                .pull-right.mr-15
+                                                  span 2500
+                                                  span  Points
+                                                // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
+                                                .clearfix
+                              //
+                              .row
+                                .col-lg-12
+                                  .followers-wrap
+                                    if(groupes)
+                                      each tiergroupe in groupes 
+                                        .row.pb-10.pl-30
+                                          p(style=' border-bottom:solid 5px') #{tiergroupe.groupname}
+                                        if (tiergroupe.joinedUsers)
+                                            ul.followers-list-wrap
+                                              li.follow-list
+                                                .follo-body
+                                                  .follo-data
+                                                    #rang.pull-left.pl-30.pr-30
+                                                      h4 #1
+                                                    img.user-img.img-circle(src='/dist/img/user.png', alt='user')
+                                                    .user-data
+                                                      span.name.block.capitalize-font #{tiergroupe.createdBy.userpseudo}
+                                                      // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
+                                                    .pull-right.mr-15
+                                                      span 2500
+                                                      span  Points
+                                                    // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
+                                                    .clearfix
+                                              - var i = 2;
+                                                each groupmate in tiergroupe.joinedUsers
+                                                  li.follow-list
+                                                    .follo-body
+                                                      .follo-data
+                                                        #rang.pull-left.pl-30.pr-30
+                                                          h4 ##{i}
+                                                        img.user-img.img-circle(src='/dist/img/user.png', alt='user')
+                                                        .user-data
+                                                          span.name.block.capitalize-font #{groupmate}
+                                                          // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
+                                                        .pull-right.mr-15
+                                                          span 2500
+                                                          span  Points
+                                                        // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
+                                                        .clearfix
                             #settings_8.tab-pane.fade(role='tabpanel')
                               // Row
                               .row
@@ -324,7 +406,7 @@ html(lang='en')
                                                   .input-group
                                                     .input-group-addon
                                                       i.icon-user
-                                                    input#exampleInputuname_01.form-control(type='text', placeholder='willard bryant')
+                                                    input.form-control(type='text', placeholder='willard bryant')
                                                 .form-group
                                                   label.control-label.mb-10(for='exampleInputEmail_01') Email address
                                                   .input-group
@@ -363,6 +445,44 @@ html(lang='en')
                                                     option(value='Category 4') UK
                                               .form-actions.mt-10
                                                 button.btn.btn-success.mr-10.mb-30(type='submit') Update profile
+                            #groupform.tab-pane.fade(role='tabpanel')
+                              // Row
+                              .row
+                                .col-lg-12
+                                  div
+                                    .panel-wrapper.collapse.in
+                                      .panel-body.pa-0
+                                        .row.col-sm-12.col-xs-12.ml-10
+                                          label.mb-15.txt-danger.h5 Attention: Vous devez vous assurer que le numéro de téléphone saisi est celui d'un joueur ayant déjà créé son compte
+                                        .row.col-sm-12.col-xs-12.ml-10
+                                          if(undefined===mongroupe || null===mongroupe)
+                                            label.h3 Créer un groupe
+                                          else
+                                            label.h3 Gérer un groupe
+                                        .col-sm-12.col-xs-12
+                                          .form-wrap
+                                            form(method='POST' action=(undefined===mongroupe || null===mongroupe ? '/create_group' : '/update_group'))
+                                              .form-body.overflow-hide
+                                                .row
+                                                .form-group.col-sm-6.col-xs-12
+                                                  label.control-label.mb-10 Nom du groupe
+                                                  .input-group
+                                                    .input-group-addon
+                                                      i.icon-people
+                                                    input.form-control(type='text', name='groupname', placeholder='Ex: Fada Banifandou 1' readonly=(undefined===mongroupe || null===mongroupe ? false : true) value=(undefined===mongroupe || null===mongroupe ? '' : mongroupe.groupname) required='true')
+                                                if(mongroupe)
+                                                  .row
+                                                  - for (var i = 0; i < 15; ++i) {
+                                                    .col-sm-4.col-xs-12.form-group
+                                                      label.control-label.mb-10
+                                                        | Numéro de Téléphone du joueur #{i+1}
+                                                      .input-group
+                                                        .input-group-addon
+                                                          i.icon-phone
+                                                        input.form-control(type='tel', name='userphone#{i+1}', maxlength='8', placeholder='8 chiffres Ex: 85 90 89 93')
+                                                  - }
+                                              .form-actions.mt-10
+                                                button.btn.btn-success.mr-10.mb-30(type='submit') Enregistrer le groupe
           // /Row
         // Footer
         footer.footer.container-fluid.pl-30.pr-30
@@ -419,3 +539,44 @@ html(lang='en')
     // Init JavaScript
     script(src='/dist/js/init.js')
     script(src='/dist/js/widgets-data.js')
+    //script.
+          $(document).ready(function() {
+          $('#submit_prono').click(function(){
+              var userid = $('.userid').attr('data-userid');
+              var docs = [];
+              $('.gamebody').each(function() {
+                var i = 1;
+                var gameid_item = '',
+                    prteam1_item = '',
+                    prteam2_item = '';
+                var doc = [{user:'',
+                           game:'',
+                           prteam1:'',
+                           prteam2:''}]
+                gameid_item = $(this).attr('data-gameid');
+                prteam1_item = $('#prteam1'+ gameid_item).val();
+                prteam2_item = $('#prteam2' + gameid_item).val();
+                doc.user = userid
+                doc.game = gameid_item
+                doc.prteam1 = prteam1_item
+                doc.prteam2 = prteam2_item
+                
+                docs.push(doc);
+                });
+                /*alert(docs)
+                return*/
+                $.ajax({
+                    type: 'POST',
+                    url: '/users/update-pronostic',
+                    data: JSON.stringify(docs), // here I send the data when the button on the browser is clicked.
+                    dataType: "json"
+                }).done(function( msg ) {
+                    console.log( "Data Saved: " + msg );
+                }).fail(function(msg){
+                    console.log("Fail! " +msg.data);
+                });
+              
+          
+          });
+          });
+          

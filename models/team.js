@@ -12,11 +12,11 @@ var TeamSchema = new Schema({
 
 
 // Virtual for this team instance name.
-MatiereSchema
+/*MatiereSchema
 .virtual('name')
 .get(function () {
   return this.name;
-});
+});*/
 
 
 // Export model.
