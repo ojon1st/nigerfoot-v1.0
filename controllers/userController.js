@@ -47,16 +47,21 @@ exports.user_profile_get = function(req, res, next) {
                 .exec(callback);
         },
         groupes: function(callback) {
-            Groupe.find({'joinedUsers.user':req.user._id})
+            Groupe.find()
                 .populate('createdBy')
-                .populate('joinedUsers.user')
-                .exec(callback);
+                .populate({path:'joinedUsers',		
+                    populate: {path:'user',
+                               match: { '_id': req.user._id},
+                            model: 'User'}
+                  }).exec(callback);
         },
         groupe: function(callback) {
-            Groupe.findOne({'createdBy':req.user._id}).populate('joinedUsers.user').exec(callback);
+            Groupe.findOne({'createdBy':req.user._id}).populate({ path: 'joinedUsers', populate: {
+            path: 'user', model: 'User', select: 'userpseudo'}}).exec(callback);
         }, 
     }, function(err, results) {
         if (err) {return next(err);}
+        
         console.log(results.groupes)
         res.render('profile', {title:'Mon Profil', user:req.user, list_games:results.games, list_teams:results.teams, list_users:results.users, groupes:results.groupes, mongroupe:results.groupe});
     });

@@ -32,11 +32,11 @@ html(lang='en')
       nav.navbar.navbar-inverse.navbar-fixed-top
         .pull-left.mt-10.ml-50
           a(href='/')
-            img.brand-img(src='/dist/img/logo.png', alt='brand')
+            img.brand-img.mr-10(src='/img/logo-nigerfoot.png', width='100px', height='40px', alt='brand')
             span.brand-text NIGER FOOT
-        .pull-right.mt-10
-          button#submit_prono.btn.btn-success(type='submit' form='pronoform') Valider mes pronostics
-          a.button.btn.btn-warning.ml-50(href='/logout') Déconnexion
+        div(style='float:right')
+          button#submit_prono.btn.btn-success.col-md-6.col-sm-6.col-xs-6(type='submit' form='pronoform') Valider pronostics
+          a.button.btn.btn-warning.ml-40.mr-20.col-md-3.col-sm-3.col-xs-3(href='/logout') Quitter
       .container
       !=messages()
       // Main Content
@@ -186,74 +186,56 @@ html(lang='en')
                                   a#dropdown_16_tab(data-toggle='tab', role='tab', href='#dropdown_16', aria-expanded='false') Reviews
                           #myTabContent_8.tab-content
                             #gameslisting.tab-pane.fade.active.in(role='tabpanel')
-                              .col-md-12
-                                .pt-20
-                                  .streamline.user-activity
-                                    .sl-item
-                                      .col-md-12.col-sm-12.pt-20.pl-0.pr-0(style='display: -webkit-inline-box;\
-                                      ')
-                                        form(method='POST' action='/users/update-pronostic' id='pronoform')
-                                            table.table-responsive.datedumatch.mb-10.ml-15
-                                              - const monthNames = ["Janvier","Fevrier","Mars","Avril","Mai", "Juin","Juillet", "Aout","Septembre","Octobre","Novembre","Decembre"];
+                              .panel-wrapper.collapse.in
+                                  .panel-body
+                                    .table-wrap.mt-40
+                                      .table-responsive
+                                        table.table.mb-0
+                                          - const monthNames = ["Janvier","Fevrier","Mars","Avril","Mai", "Juin","Juillet", "Aout","Septembre","Octobre","Novembre","Decembre"];
+                                          each game in list_games
+                                              - var score1value = user.userprono['prteam'+game.gamenumber+'1'];
+                                              - var score2value = user.userprono['prteam'+game.gamenumber+'2'];
+                                              thead
+                                                tr
+                                                  th
+                                                    - var dateg = new Date(game.gamedate)
+                                                    - dategame = dateg.getDate() + ' ' + monthNames[dateg.getMonth()]
+                                                    - hourgame = dateg.getHours() + ' : 0' + dateg.getMinutes()
+                                                    | #{dategame} à #{hourgame}
+                                                    br
+                                                    | Groupe #{game.team1.teamgroup}
+                                                  th
+                                                    label(for='')
+                                                      | #{game.gamestadium}
+                                                      br
+                                                      | #{game.gameplace}
+                                                  th Pronostic
+                                              tbody
+                                                tr                                                    
+                                                  td
+                                                    label(for='')
+                                                      img.flag-size.mr-10(src='/img/teams/#{game.team1.teamname}.png', alt='')
+                                                      h3.team-name #{game.team1.teamname}
 
-                                              each game in list_games
-                                                  - var score1value = user.userprono['prteam'+game.gamenumber+'1'];
-                                                  - var score2value = user.userprono['prteam'+game.gamenumber+'2'];
-                                                  
-                                                  thead
-                                                    tr(style=' border-bottom:solid 5px')
-                                                      th 
-                                                        - var dateg = new Date(game.gamedate)
-                                                        - dategame = dateg.getDate() + ' ' + monthNames[dateg.getMonth()]
-                                                        | #{dategame}
-                                                      th
-                                                      th
-                                                      th.pl-50 Pronostic
-                                                  tbody.gamebody(data-gameid='#{game._id}')
-                                                    tr
-                                                      td.pr-50
-                                                        label(for='')
-                                                          p 
-                                                            - hourgame = dateg.getHours() + ' : 0' + dateg.getMinutes()
-                                                            | #{hourgame}
-                                                          p Groupe #{game.team1.teamgroup}
-                                                      td
-                                                        label(for='')
-                                                          img.flag-size(src='/img/teams/#{game.team1.teamname}.png', alt='')
-                                                          h3.team-name #{game.team1.teamname}
+                                                  td(style='vertical-align: middle;')
+                                                    label(for='')
+                                                      input.input-team-score(type='Number', value='0', disabled='')
+                                                  td(style='vertical-align: middle;')
+                                                    label(for='')
+                                                      input.input-team-score.prteam1(type='Tel', name='prteam#{game.gamenumber}1' min='0', max='15', maxlength='2' id='prteam1#{game._id}' readonly=(false===game.started ? false : 'readonly') style=(false===game.started ? '' : 'background-color:gold') value=(undefined===user ? '' : score1value))
+                                                tr
+                                                  td
+                                                    label(for='')
+                                                      img.flag-size.img-responsive.mr-10(src='/img/teams/#{game.team2.teamname}.png', alt='')
+                                                      h3.team-name #{game.team2.teamname}
+                                                  td(style='vertical-align: middle;')
+                                                    label(for='')
+                                                      input.input-team-score(type='Number', value='0', disabled='')
+                                                  td(style='vertical-align: middle;')
+                                                    label(for='')
+                                                      input.input-team-score.prteam2(type='Tel', name='prteam#{game.gamenumber}2', min='0', max='15', maxlength='2' id='prteam2#{game._id}' readonly=(false===game.started ? false : true) style=(false===game.started ? '' : 'background-color:gold') value=(undefined===user ? '' : score2value))
 
-                                                      td.pl-50.pr-50(style='vertical-align: middle;')
-                                                        label(for='')
-                                                          input.input-team-score(type='Number', value='0', disabled='')
-                                                      td.pl-50.pr-50(style='vertical-align: middle;')
-                                                        label(for='')
-                                                          input.input-team-score.prteam1(type='Tel', name='prteam#{game.gamenumber}1' min='0', max='15', maxlength='2' id='prteam1#{game._id}' readonly=(false===game.started ? false : 'readonly') style=(false===game.started ? '' : 'background-color:gold') value=(undefined===user ? '' : score1value))
-                                                    tr
-                                                      td.pr-50
-                                                        label(for='')
-                                                          p #{game.gamestadium}
-                                                          p #{game.gameplace}
-                                                      td
-                                                        label(for='')
-                                                          img.flag-size(src='/img/teams/#{game.team2.teamname}.png', alt='')
-                                                          h3.team-name #{game.team2.teamname}
-                                                      td.pl-50.pr-50(style='vertical-align: middle;')
-                                                        label(for='')
-                                                          input.input-team-score(type='Number', value='0', disabled='')
-                                                      td.pl-50.pr-50(style='vertical-align: middle;')
-                                                        label(for='')
-                                                          input.input-team-score.prteam2(type='Tel', name='prteam#{game.gamenumber}2', min='0', max='15', maxlength='2' id='prteam2#{game._id}' readonly=(false===game.started ? false : true) style=(false===game.started ? '' : 'background-color:gold') value=(undefined===user ? '' : score2value))
-                                            
-                                      //
-                                        <a href="javascript:void(0)">
-                                        <div class="sl-avatar avatar avatar-sm avatar-circle">
-                                        <img class="img-responsive img-circle" src="dist/img/user.png" alt="avatar"/>
-                                        </div>
-                                        <div class="sl-content">
-                                        <p class="inline-block"><span class="capitalize-font txt-success mr-5 weight-500">Clay Masse</span><span>invited to join the meeting in the conference room at 9.45 am</span></p>
-                                        <span class="block txt-grey font-12 capitalize-font">3 Min</span>
-                                        </div>
-                                        </a>
+                              
                             #follo_8.tab-pane.fade(role='tabpanel')
                               .row
                                 .col-lg-12
@@ -383,7 +365,7 @@ html(lang='en')
                                                           h4 ##{i}
                                                         img.user-img.img-circle(src='/dist/img/user.png', alt='user')
                                                         .user-data
-                                                          span.name.block.capitalize-font #{groupmate}
+                                                          span.name.block.capitalize-font #{groupmate.userpseudo}
                                                           // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
                                                         .pull-right.mr-15
                                                           span 2500
@@ -541,6 +523,7 @@ html(lang='en')
     script(src='/dist/js/widgets-data.js')
     //script.
           $(document).ready(function() {
+          $('body').css('background-image', 'url(https://www.pickthebrain.com/blog/wp-content/uploads/2015/12/8-things-successful-people-perform-differently-from-others.jpg)')
           $('#submit_prono').click(function(){
               var userid = $('.userid').attr('data-userid');
               var docs = [];
