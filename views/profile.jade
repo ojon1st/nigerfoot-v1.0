@@ -187,12 +187,13 @@ html(lang='en')
                           #myTabContent_8.tab-content
                             #gameslisting.tab-pane.fade.active.in(role='tabpanel')
                               .panel-wrapper.collapse.in
-                                  .panel-body
-                                    .table-wrap.mt-40
-                                      .table-responsive
+                                .panel-body
+                                  .table-wrap.mt-40
+                                    .table-responsive
+                                      form(method = 'POST' action='/sumbit_pronostic' id='pronoform')
                                         table.table.mb-0
                                           - const monthNames = ["Janvier","Fevrier","Mars","Avril","Mai", "Juin","Juillet", "Aout","Septembre","Octobre","Novembre","Decembre"];
-                                          each game in list_games
+                                            each game in list_games
                                               - var score1value = user.userprono['prteam'+game.gamenumber+'1'];
                                               - var score2value = user.userprono['prteam'+game.gamenumber+'2'];
                                               thead
@@ -337,10 +338,10 @@ html(lang='en')
                                 .col-lg-12
                                   .followers-wrap
                                     if(groupes)
-                                      each tiergroupe in groupes 
+                                      each group in groupes 
                                         .row.pb-10.pl-30
-                                          p(style=' border-bottom:solid 5px') #{tiergroupe.groupname}
-                                        if (tiergroupe.joinedUsers)
+                                          p(style=' border-bottom:solid 5px') #{group.groupname}
+                                        if (group.joinedUsers)
                                             ul.followers-list-wrap
                                               li.follow-list
                                                 .follo-body
@@ -349,7 +350,7 @@ html(lang='en')
                                                       h4 #1
                                                     img.user-img.img-circle(src='/dist/img/user.png', alt='user')
                                                     .user-data
-                                                      span.name.block.capitalize-font #{tiergroupe.createdBy.userpseudo}
+                                                      span.name.block.capitalize-font #{group.createdBy.userpseudo}
                                                       // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
                                                     .pull-right.mr-15
                                                       span 2500
@@ -357,7 +358,7 @@ html(lang='en')
                                                     // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                     .clearfix
                                               - var i = 2;
-                                                each groupmate in tiergroupe.joinedUsers
+                                                each groupmate in group.joinedUsers
                                                   li.follow-list
                                                     .follo-body
                                                       .follo-data
@@ -372,6 +373,7 @@ html(lang='en')
                                                           span  Points
                                                         // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                         .clearfix
+                                        
                             #settings_8.tab-pane.fade(role='tabpanel')
                               // Row
                               .row
