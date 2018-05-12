@@ -2,6 +2,7 @@ var User = require('../models/user');
 var Team = require('../models/team');
 var Groupe = require('../models/groupe');
 var Game = require('../models/game');
+var Rank = require('../models/classement');
 var async = require('async');
 var bcrypt = require('bcryptjs');
 var flash = require('connect-flash');
@@ -53,16 +54,43 @@ exports.user_profile_get = function(req, res, next) {
         },
         groupe: function(callback) {
             Groupe.findOne({'createdBy':req.user._id}).populate({ path: 'joinedUsers', populate: {path:'user'},select:'userpseudo'}).exec(callback);
-        }, 
+        },
+        rankmax: function (callback) {
+            Rank.findOne()
+            .sort({rankaftergame: -1})
+            .exec(callback);
+        },
     }, function(err, results) {
         if (err) {return next(err);}
         
-        /*console.log(req.user.joinedGroups)*/
-        console.log(results.groupes.joinedGroups)
+        async.parallel({
+            myrank: function(callback) {
+                setTimeout(function() {
+                    results.rankmax.rankstate.forEach(function(theuser) {
+                        if (theuser.usrid.toString() == req.user._id){
+                            myrank = theuser;
+                        }
+                    });
+                    callback(null, myrank);
+                }, 200);
+            },
+            two: function(callback) {
+                setTimeout(function() {
+                    callback(null, 2);
+                }, 100);
+            }
+        }, function(err, resultats) {
+            
+            // results is now equals to: {one: 1, two: 2}
+            
+            res.render('profile', {title:'Mon Profil', user:req.user, list_games:results.games, list_teams:results.teams, list_users:results.users, groupes:results.groupes.joinedGroups, mongroupe:results.groupe, rankmax:results.rankmax, myrank:myrank});
+        });
         
-        res.render('profile', {title:'Mon Profil', user:req.user, list_games:results.games, list_teams:results.teams, list_users:results.users, groupes:results.groupes.joinedGroups, mongroupe:results.groupe});
+        
+        
+        
     });
-    /*res.render('profile', { user : req.user });*/
+    
 };
 
 exports.prono_update_post = [    // Validate that the name field is not empty.
@@ -655,9 +683,274 @@ exports.game_update_post = [
 ];
 
 
+exports.classement_get = function(req, res, next){
+    async.parallel({
+        games_not_started: function (callback) {
+            Game.find({started:'false'})
+            .sort({gamenumber: 1})
+            .exec(callback);
+        },
+        games_started: function (callback) {
+            Game.find({started:'true'})
+            .sort({gamenumber: -1})
+            .exec(callback);
+        },
+        rankmax: function (callback) {
+            Rank.findOne({},{rankaftergame:1})
+            .sort({rankaftergame: -1})
+            .exec(callback);
+        },
+    }, function (err, results) {
+        if (err) {
+            return next(err);
+        }
+        res.render('classement', {title: 'Manage Classement', games_not_started: results.games_not_started, games_started: results.games_started, rankmax:results.rankmax});
+    });
+};
 
 
 
+exports.close_game_post = [
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request .
+        const errors = validationResult(req);
+
+    // Create a matiere object with escaped and trimmed data (and the old id!)
+         var game = new Game(
+              { _id:req.body.gamenumber_started,
+                started: true}
+            );
+
+
+        if (!errors.isEmpty()) {
+            // There are errors. Render the form again with sanitized values and error messages.
+            
+            
+             // Get all authors and genres for form
+            async.parallel({
+                game: function(callback) {
+                    Game.findById(req.body.gamenumber_started).exec(callback);
+                },
+            }, function(err, results) {
+                if (err) {return next(err);}
+                res.render('classement', { title: 'Update Game', game:results.game, errors: errors.array() });
+            });
+            
+        return;
+        }
+        else {
+            
+            // Data from form is valid. Update the record.
+            Game.findByIdAndUpdate(req.body.gamenumber_started, game, {returnOriginal:true}, function (err,thegame) {
+                if (err) {return next(err);}
+                   // Successful - redirect to matiere detail page.
+                   res.redirect('/users/classement');
+                });
+        }
+    }
+];
+
+
+
+exports.set_final_score_post = [
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request .
+        const errors = validationResult(req);
+
+    // Create a matiere object with escaped and trimmed data (and the old id!)
+         var game = new Game(
+              { _id:req.body.gamenumber_score,
+                rteam1:req.body.put_final_rteam1,
+                rteam2:req.body.put_final_rteam2,
+                started: true});
+
+
+        if (!errors.isEmpty()) {
+            // There are errors. Render the form again with sanitized values and error messages.
+            
+             // Get all authors and genres for form
+            async.parallel({
+                game: function(callback) {
+                    Game.findById(req.body.gamenumber_score).exec(callback);
+                },
+            }, function(err, results) {
+                if (err) {return next(err);}
+                res.render('classement', {title: 'Update Game', game:results.game, errors: errors.array()});
+            });
+            
+        return;
+        }
+        else {
+            
+            // Data from form is valid. Update the record.
+            Game.findByIdAndUpdate(req.body.gamenumber_score, game, {returnOriginal:true}, function (err,thegame) {
+                if (err) {return next(err);}
+                   // Successful - redirect to matiere detail page.
+                   res.redirect('/users/classement');
+                });
+        }
+    }
+    
+];
+
+
+exports.update_score_post = [
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+        
+            async.parallel({
+                game: function(callback) {
+                    Game.findById(req.body.gamenumber_rank).exec(callback);
+                },
+                /*games_started: function (callback) {
+                    Game.find({started:'true'})
+                    .sort({gamenumber: -1})
+                    .exec(callback);
+                },*/
+            }, function (err, results) {
+                if (err) {
+                    return next(err);
+                }
+                if (results.game.rteam1 != null && results.game.rteam2 != null){
+                    var grteam1 = results.game.rteam1;
+                    var grteam2 = results.game.rteam2;
+
+                    var scenario = results.game.rteam1 - results.game.rteam2;
+
+            }
+
+
+           User.find({},function(err, users) {
+              users.forEach(function(theuser) {
+                  if (theuser.userprono['prteam'+results.game.gamenumber+'1'] != null && theuser.userprono['prteam'+results.game.gamenumber+'1'] != 'undefined' && theuser.userprono['prteam'+results.game.gamenumber+'2'] != null && theuser.userprono['prteam'+results.game.gamenumber+'2'] != 'undefined'){
+
+                    var uprteam1 = theuser.userprono['prteam'+results.game.gamenumber+'1'];
+                    var uprteam2 = theuser.userprono['prteam'+results.game.gamenumber+'2'];
+
+                    var user_scenario = theuser.userprono['prteam'+results.game.gamenumber+'1'] - theuser.userprono['prteam'+results.game.gamenumber+'2']
+
+                    if (scenario == 0 && user_scenario == 0){
+                        if (grteam1 == uprteam1 && grteam2 == uprteam2){
+                            theuser.userscore += 1000;
+                            theuser.save();
+                            //console.log('score exact: 1000 points')
+                        } else{
+                            theuser.userscore += 600;
+                            theuser.save();
+                            //console.log('résultat exact, score non-exact: 600 points')
+                        }
+                    }
+
+                    if (scenario > 0 && user_scenario > 0){
+                        if (grteam1 == uprteam1 && grteam2 == uprteam2){
+                            theuser.userscore += 1000;
+                            theuser.save();
+                            //console.log('score exact: 1000 points')
+                        } else{
+                            theuser.userscore += 600;
+                            theuser.save();
+                            //console.log('résultat exact, score non-exact: 600 points')
+                        }
+                    }
+
+
+                    if (scenario < 0 && user_scenario < 0){
+                        if (grteam1 == uprteam1 && grteam2 == uprteam2){
+                            theuser.userscore += 1000;
+                            theuser.save();
+                            //console.log('score exact: 1000 points')
+                        } else{
+                            theuser.userscore += 600;
+                            theuser.save();
+                            //console.log('résultat exact, score non-exact: 600 points')
+                        }
+                    }
+
+
+                    if (scenario > 0 && user_scenario < 0){
+                        theuser.userscore += 250;
+                        theuser.save();
+                        //console.log('résultat perdu: 250 points')
+                    }
+
+                    if (user_scenario > 0 && scenario < 0){
+                        theuser.userscore += 250;
+                        theuser.save();
+                        //console.log('résultat perdu: 250 points')
+                    }
+
+                    //console.log('user_scenario:' + user_scenario)
+                }
+
+                 //console.log(theuser.userprono['prteam'+results.game.gamenumber+'1']) 
+
+                  /*if (theuser.userprono['prteam'+req.body.gamenumber_rank+'1'] === results.game.rteam1 &&                     theuser.userprono['prteam'+req.body.gamenumber_rank+'2'] === results.game.rteam2){
+
+                      console.log('score exact 1000 points')
+                  } else if{
+
+                  }
+                  theuser.joinedGroups.push(found_group);
+                  theuser.save(function (err) {
+                      found_group.joinedUsers.push(theuser);
+                      found_group.save();
+                    });*/
+
+              });
+            });
+
+            res.redirect('/users/classement')
+        });
+ 
+        }
+];
+
+exports.create_classement_post = [
+     // Process request after validation and sanitization.
+    (req, res, next) => {
+        
+        // Create a new rank document object.
+        var rank = new Rank({
+            rankstate:[],
+            rankaftergame: req.body.gamenumber_for_rank});
+        
+            async.parallel({
+                users: function(callback) {
+                    User.find({},{_id:1, userpseudo:1, userscore:1}).sort({userscore: -1}).exec(callback);
+                },
+            }, function (err, results) {
+                if (err) {
+                    return next(err);
+                }
+                var rang = 0;
+                var points = '';
+                
+              results.users.forEach(function(theuser) {
+                  var newpoints = theuser.userscore;
+                  //var newrang = ;
+                  if (points != newpoints){
+                      rang++
+                      points = newpoints;
+                      rank.rankstate.push({usrid:theuser._id ,usrpseudo:theuser.userpseudo ,usrscore:theuser.userscore, usrrank:rang});
+                  } else{
+                      rank.rankstate.push({usrid:theuser._id ,usrpseudo:theuser.userpseudo ,usrscore:theuser.userscore, usrrank:'-'});
+                  }
+                  
+              });
+              
+            
+             rank.save();
+             res.redirect('/users/classement')
+            
+    });
+    }
+];
+                       
+                       
 passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
