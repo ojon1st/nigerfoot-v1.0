@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const User = require('../models/user');
 const router = express.Router();
-var user_controller = require('../controllers/userController');
+var user_controller = require('../controllers/usercontroller');
 
 router.get('/', (req, res) => {
     res.render('index', { user : req.user });
@@ -38,6 +38,7 @@ router.get('/game/:id/update', user_controller.game_update_get);
 
 // POST request to update chapitre.
 router.post('/game/:id/update', user_controller.game_update_post);
+
 
 //POST propnostics
 router.post('/sumbit_pronostic', user_controller.prono_update_post);
