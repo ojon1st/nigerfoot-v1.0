@@ -72,7 +72,7 @@ html(lang='en')
                               if (mongroupe)
                                 .col-xs-12.text-center
                                   span.counts.block.head-font
-                                    span.counter-anim 246
+                                    span.counter-anim 234
                                   span.counts-text.block #{mongroupe.groupname}
                               if (groupes)
                                 each group in groupes
@@ -247,16 +247,27 @@ html(lang='en')
                                         .follo-body
                                           .follo-data
                                             if (rankmax)
-                                              for user in rankmax.rankstate
+                                              for theuser in rankmax.rankstate
                                                 #rang.pull-left.pl-30.pr-30
-                                                  h4 #{user.usrrank}
+                                                  if (theuser.usrpseudo == user.userpseudo)
+                                                    h4.txt-primary #{theuser.usrrank}
+                                                  else
+                                                    h4 #{theuser.usrrank}
+                                                  
                                                 img.user-img.img-circle(src='/dist/img/user.png', alt='user')
                                                 .user-data
-                                                  span.name.block.capitalize-font #{user.usrpseudo}
+                                                  if (theuser.usrpseudo == user.userpseudo)
+                                                    span.name.block.txt-primary #{theuser.usrpseudo}
+                                                  else
+                                                    span.name.block #{theuser.usrpseudo}
                                                   // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
                                                 .pull-right.mr-15
-                                                  span #{user.usrscore}
-                                                  span  Points
+                                                  if (theuser.usrpseudo == user.userpseudo)
+                                                    span.txt-primary #{theuser.usrscore}
+                                                    span.txt-primary  Points
+                                                  else
+                                                    span #{theuser.usrscore}
+                                                    span  Points
                                                 // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                 .clearfix
                                                 
@@ -355,33 +366,18 @@ html(lang='en')
                                         p(style=' border-bottom:solid 5px') #{mongroupe.groupname}
                                       if (mongroupe.joinedUsers)
                                         ul.followers-list-wrap
-                                          li.follow-list
-                                            .follo-body
-                                              .follo-data
-                                                #rang.pull-left.pl-30.pr-30
-                                                  h4 #1
-                                                img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                                .user-data
-                                                  span.name.block.capitalize-font #{user.userpseudo}
-                                                  // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                                .pull-right.mr-15
-                                                  span 2500
-                                                  span  Points
-                                                // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                                .clearfix
-                                          - var i = 2;
-                                          each groupmate in mongroupe.joinedUsers
+                                          each groupmate in mongrouperank
                                             li.follow-list
                                             .follo-body
                                               .follo-data
                                                 #rang.pull-left.pl-30.pr-30
-                                                  h4 ##{i}
+                                                  h4 #{groupmate.usrrank}
                                                 img.user-img.img-circle(src='/dist/img/user.png', alt='user')
                                                 .user-data
-                                                  span.name.block.capitalize-font #{groupmate.userpseudo}
+                                                  span.name.block.capitalize-font #{groupmate.usrpseudo}
                                                   // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
                                                 .pull-right.mr-15
-                                                  span 2500
+                                                  span #{groupmate.usrscore}
                                                   span  Points
                                                 // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                 .clearfix
@@ -390,41 +386,26 @@ html(lang='en')
                                 .col-lg-12
                                   .followers-wrap
                                     if(groupes)
+                                      - var i = 0
                                       each group in groupes 
                                         .row.pb-10.pl-30
                                           p(style=' border-bottom:solid 5px') #{group.groupname}
-                                        if (group.joinedUsers)
-                                            ul.followers-list-wrap
+                                          ul.followers-list-wrap
+                                            each groupmate in groupesranks[i]
                                               li.follow-list
-                                                .follo-body
-                                                  .follo-data
-                                                    #rang.pull-left.pl-30.pr-30
-                                                      h4 #1
-                                                    img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                                    .user-data
-                                                      span.name.block.capitalize-font #{group.createdBy.userpseudo}
-                                                      // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                                    .pull-right.mr-15
-                                                      span 2500
-                                                      span  Points
-                                                    // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                                    .clearfix
-                                              - var i = 2;
-                                                each groupmate in group.joinedUsers
-                                                  li.follow-list
-                                                    .follo-body
-                                                      .follo-data
-                                                        #rang.pull-left.pl-30.pr-30
-                                                          h4 ##{i}
-                                                        img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                                        .user-data
-                                                          span.name.block.capitalize-font #{groupmate.userpseudo}
-                                                          // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                                        .pull-right.mr-15
-                                                          span 2500
-                                                          span  Points
-                                                        // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                                        .clearfix
+                                              .follo-body
+                                                .follo-data
+                                                  #rang.pull-left.pl-30.pr-30
+                                                    h4 #{groupmate.usrrank}
+                                                  img.user-img.img-circle(src='/dist/img/user.png', alt='user')
+                                                  .user-data
+                                                    span.name.block.capitalize-font #{groupmate.usrpseudo}
+                                                    // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
+                                                  .pull-right.mr-15
+                                                    span #{groupmate.usrscore}
+                                                    span  Points
+                                                  // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
+                                                  .clearfix
                                         
                             #settings_8.tab-pane.fade(role='tabpanel')
                               // Row
