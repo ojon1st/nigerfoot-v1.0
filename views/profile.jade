@@ -8,7 +8,7 @@ html(lang='en')
     meta(name='keywords', content='Niger, niger, digital, niger digital, pronostics, football, foot, cm18, coupe du monde, 2018')
     meta(name='NIGER DIGITAL', content='hencework')
     // Favicon
-    link(rel='shortcut icon', href='favicon.ico')
+    link(rel='shortcut icon', href='/favicon.ico')
     link(rel='icon', href='favicon.ico', type='image/x-icon')
     // Morris Charts CSS
     link(href='/vendors/bower_components/morris.js/morris.css', rel='stylesheet', type='text/css')
@@ -33,10 +33,10 @@ html(lang='en')
         .pull-left.mt-10.ml-50
           a(href='/')
             img.brand-img.mr-10(src='/img/logo-nigerfoot.png', width='100px', height='40px', alt='brand')
-            span.brand-text NIGER FOOT
-        div(style='float:right')
-          button#submit_prono.btn.btn-success.col-md-6.col-sm-6.col-xs-6(type='submit' form='pronoform') Valider pronostics
-          a.button.btn.btn-warning.ml-40.mr-20.col-md-3.col-sm-3.col-xs-3(href='/logout') Quitter
+            span.brand-text.title-format.h1(style='color:forestgreen') NIGER FOOT
+        div.pt-10(style='float:right;margin-left: 30px;')
+          button#submit_prono.btn.btn-success.header-btn-style.col-md-6.col-sm-6.col-xs-6(type='submit' form='pronoform') Valider pronostics
+          a.button.btn.btn-warning.ml-40.mr-20.header-btn-style.col-md-3.col-sm-3.col-xs-3(href='/logout') Quitter
       .container
       !=messages()
       // Main Content
@@ -66,12 +66,13 @@ html(lang='en')
                             .row
                               .col-xs-12.text-center
                                 span.counts.block.head-font
-                                  span.counter-anim 345
+                                  if (myrank)
+                                    span.counter-anim #{myrank.usrrank}
                                 span.counts-text.block Classement Général
                               if (mongroupe)
                                 .col-xs-12.text-center
                                   span.counts.block.head-font
-                                    span.counter-anim 246
+                                    span.counter-anim 234
                                   span.counts-text.block #{mongroupe.groupname}
                               if (groupes)
                                 each group in groupes
@@ -245,54 +246,116 @@ html(lang='en')
                                       li.follow-list
                                         .follo-body
                                           .follo-data
-                                            #rang.pull-left.pl-30.pr-30
-                                              h4 #1
-                                            img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                            .user-data
-                                              span.name.block.capitalize-font Clay Masse
-                                              // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                            .pull-right.mr-15
-                                              span 2500
-                                              span  Points
-                                            // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                            .clearfix
+                                            if (rankmax)
+                                              for theuser in rankmax.rankstate
+                                                #rang.pull-left.pl-30.pr-30
+                                                  if (theuser.usrpseudo == user.userpseudo)
+                                                    h4.txt-primary #{theuser.usrrank}
+                                                  else
+                                                    h4 #{theuser.usrrank}
+                                                  
+                                                img.user-img.img-circle(src='/dist/img/user.png', alt='user')
+                                                .user-data
+                                                  if (theuser.usrpseudo == user.userpseudo)
+                                                    span.name.block.txt-primary #{theuser.usrpseudo}
+                                                  else
+                                                    span.name.block #{theuser.usrpseudo}
+                                                  // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
+                                                .pull-right.mr-15
+                                                  if (theuser.usrpseudo == user.userpseudo)
+                                                    span.txt-primary #{theuser.usrscore}
+                                                    span.txt-primary  Points
+                                                  else
+                                                    span #{theuser.usrscore}
+                                                    span  Points
+                                                // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
+                                                .clearfix
+                                                
                             #photos_8.tab-pane.fade(role='tabpanel')
                               .col-md-12.pb-20
-                                .gallery-wrap
-                                  .portfolio-wrap.project-gallery
-                                    ul#portfolio_1.portf.auto-construct.project-gallery(data-col='4')
-                                      li.item(data-src='/dist/img/gallery/equal-size/mock1.jpg', data-sub-html='<h6>Bagwati</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock1.jpg', alt='Image description')
-                                          span.hover-cap Bagwati
-                                      li.item(data-src='dist/img/gallery/equal-size/mock2.jpg', data-sub-html='<h6>Not a Keyboard</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock2.jpg', alt='Image description')
-                                          span.hover-cap Not a Keyboard
-                                      li.item(data-src='dist/img/gallery/equal-size/mock3.jpg', data-sub-html='<h6>Into the Woods</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock3.jpg', alt='Image description')
-                                          span.hover-cap Into the Woods
-                                      li.item(data-src='dist/img/gallery/equal-size/mock4.jpg', data-sub-html='<h6>Ultra Saffire</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock4.jpg', alt='Image description')
-                                          span.hover-cap  Ultra Saffire
-                                      li.item(data-src='dist/img/gallery/equal-size/mock5.jpg', data-sub-html='<h6>Happy Puppy</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock5.jpg', alt='Image description')
-                                          span.hover-cap Happy Puppy
-                                      li.item(data-src='dist/img/gallery/equal-size/mock6.jpg', data-sub-html='<h6>Wooden Closet</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock6.jpg', alt='Image description')
-                                          span.hover-cap Wooden Closet
-                                      li.item(data-src='dist/img/gallery/equal-size/mock7.jpg', data-sub-html='<h6>Happy Puppy</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock7.jpg', alt='Image description')
-                                          span.hover-cap Happy Puppy
-                                      li.item(data-src='dist/img/gallery/equal-size/mock8.jpg', data-sub-html='<h6>Wooden Closet</h6><p>Classic view from Rigwood Jetty on Coniston Water an old archive shot similar to an old post but a little later on.</p>')
-                                        a(href='')
-                                          img.img-responsive(src='/dist/img/gallery/equal-size/mock8.jpg', alt='Image description')
-                                          span.hover-cap Wooden Closet
+                                h3.text-center Règles du jeu de pronostics
+                                br
+                                br
+                                h4 Le but du jeu
+                                | Obtenir le meilleur score aux différents pronostics des 64 matchs de la coupe du monde.
+                                | De sortir les 100 premiers y compris le meilleur score et de les récompenser.
+                                br
+                                br
+                                h4 Participation
+                                | La participation à notre jeu de pronostics est gratuite. Tout utilisateur enregistré sur notre site peut participer.
+                                | Vous pouvez prendre part à ce concours en cours de la coupe du monde, cela réduira simplement vos chances de victoire.
+                                br
+                                br
+                                h4 Saisie des pronostics
+                                | Les pronostics peuvent uniquement être saisis en ligne sur notre site. Faire des pronostics par courrier, téléphone, etc. n'est pas possible!
+                                br
+                                br
+                                h4 Date limite des pronostics
+                                | Les pronostics peuvent être fait jusqu'au coup d'envoi du match. Si une journée de championnat s'étale sur plusieurs jours, les matchs se jouant les autres jours peuvent toujours être pronostiqués, même si le premier match de la journée a déjà débuté. Exemple: Une journée de championnat se joue le mardi, le jeudi et le vendredi. Même si le match du mardi a déjà démarré, les matchs du jeudi et du vendredi peuvent toujours être pronostiqués.
+                                br
+                                br
+                                h4 Le classement se construit de la façon suivante :
+                                ul(style='padding-left:50px;list-style: disc;')
+                                  li 600 points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                | Si on récapitule, il est donc possible de gagner 1000 points maximum par match et un total de 48000 points maximum sur l'ensemble de la phase de poule. Le vainqueur sera celui qui obtiendra le plus de points à l'issue des maths de toutes journées de la coupe du monde.
+                                
+                                br
+                                br
+                                h4 Calcul des points et système de notation :
+                                br
+                                p Le calcul des points est réalisé selon 2 critères :
+                                ul(style='padding-left:50px;list-style: disc;')
+                                  li Le bon résultat rapporte 600 points et correspond à la capacité du pronostiqueur à trouver le  bon résultat du match. (victoire de l'équipe à domicile, match nul ou victoire extérieure)
+                                  li Le bon score rapporte 1000 points et correspond à la capacité du pronostiqueur à trouver le score exact du match. (nombre de buts inscrits à domicile et nombre de buts inscrits à l'extérieur)
+                                  li Le mauvais résultat : 250 points
+                                  li Vous n’avez pas pronostiqué pour un match : 0 points
+                                br
+                                br
+                                h4 Voici donc les possibilités de résultats d'un pronostiqueur pour un match :
+                                br
+                                
+                                ul(style='padding-left:50px;list-style: disc;')
+                                  li Le bon résultat et le bon score : 1000 points
+                                  li Le bon résultat : 600 points
+                                  li Le mauvais résultat : 250 points
+                                  li Vous n’avez pas pronostiqué pour un match : 0 points
+                                br
+                                | Alors n'hésitez pas à rejoindre le concours et participez dès maintenant
+                                | Selon le résultat du match, des points variables sont attribués dans le Jeu de Pronostics. La liste suivante montre le calcul exact des points.
+                                div.col-md-6.col-sm-6.col-md-offset-3.col-sm-offset-3.text-center
+                                  table.table
+                                    thead
+                                      tr
+                                        th Résultat
+                                        th Mon pronostic
+                                        th Points
+                                    tbody
+                                      tr
+                                        th.text-center 3:1
+                                        th.text-center 3:1
+                                        th 1000 points
+                                      tr
+                                        th.text-center 3:1
+                                        th.text-center 3:0
+                                        th 600 points
+                                      tr
+                                        th.text-center 3:1
+                                        th.text-center 2:3
+                                        th 250 points
+                                      tr
+                                        th.text-center 3:1
+                                        th.text-center  :
+                                        th  0 points
+                                br
+                                br
+                                div.col-md-12.col-sm-12
+                                  h4 Analyse des pronostics
+                                  | Le classement général de tous les joueurs peut être consulté à tout moment dans l’onglet « classement » de la plateforme. Les classements sont mis à jour dans le quart d’heure suivant la fin de chaque match.
+                                  br
+                                  br
+                                div.col-md-12.col-sm-12
+                                  h4 Lots
+                                  | Détails à venir ...
                             #earnings_8.tab-pane.fade(role='tabpanel')
                               // Row
                               .row
@@ -303,33 +366,18 @@ html(lang='en')
                                         p(style=' border-bottom:solid 5px') #{mongroupe.groupname}
                                       if (mongroupe.joinedUsers)
                                         ul.followers-list-wrap
-                                          li.follow-list
-                                            .follo-body
-                                              .follo-data
-                                                #rang.pull-left.pl-30.pr-30
-                                                  h4 #1
-                                                img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                                .user-data
-                                                  span.name.block.capitalize-font #{user.userpseudo}
-                                                  // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                                .pull-right.mr-15
-                                                  span 2500
-                                                  span  Points
-                                                // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                                .clearfix
-                                          - var i = 2;
-                                          each groupmate in mongroupe.joinedUsers
+                                          each groupmate in mongrouperank
                                             li.follow-list
                                             .follo-body
                                               .follo-data
                                                 #rang.pull-left.pl-30.pr-30
-                                                  h4 ##{i}
+                                                  h4 #{groupmate.usrrank}
                                                 img.user-img.img-circle(src='/dist/img/user.png', alt='user')
                                                 .user-data
-                                                  span.name.block.capitalize-font #{groupmate.userpseudo}
+                                                  span.name.block.capitalize-font #{groupmate.usrpseudo}
                                                   // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
                                                 .pull-right.mr-15
-                                                  span 2500
+                                                  span #{groupmate.usrscore}
                                                   span  Points
                                                 // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                 .clearfix
@@ -338,41 +386,26 @@ html(lang='en')
                                 .col-lg-12
                                   .followers-wrap
                                     if(groupes)
+                                      - var i = 0
                                       each group in groupes 
                                         .row.pb-10.pl-30
                                           p(style=' border-bottom:solid 5px') #{group.groupname}
-                                        if (group.joinedUsers)
-                                            ul.followers-list-wrap
+                                          ul.followers-list-wrap
+                                            each groupmate in groupesranks[i]
                                               li.follow-list
-                                                .follo-body
-                                                  .follo-data
-                                                    #rang.pull-left.pl-30.pr-30
-                                                      h4 #1
-                                                    img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                                    .user-data
-                                                      span.name.block.capitalize-font #{group.createdBy.userpseudo}
-                                                      // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                                    .pull-right.mr-15
-                                                      span 2500
-                                                      span  Points
-                                                    // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                                    .clearfix
-                                              - var i = 2;
-                                                each groupmate in group.joinedUsers
-                                                  li.follow-list
-                                                    .follo-body
-                                                      .follo-data
-                                                        #rang.pull-left.pl-30.pr-30
-                                                          h4 ##{i}
-                                                        img.user-img.img-circle(src='/dist/img/user.png', alt='user')
-                                                        .user-data
-                                                          span.name.block.capitalize-font #{groupmate.userpseudo}
-                                                          // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
-                                                        .pull-right.mr-15
-                                                          span 2500
-                                                          span  Points
-                                                        // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
-                                                        .clearfix
+                                              .follo-body
+                                                .follo-data
+                                                  #rang.pull-left.pl-30.pr-30
+                                                    h4 #{groupmate.usrrank}
+                                                  img.user-img.img-circle(src='/dist/img/user.png', alt='user')
+                                                  .user-data
+                                                    span.name.block.capitalize-font #{groupmate.usrpseudo}
+                                                    // <span class="time block truncate txt-grey">No one saves us but ourselves.</span>
+                                                  .pull-right.mr-15
+                                                    span #{groupmate.usrscore}
+                                                    span  Points
+                                                  // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
+                                                  .clearfix
                                         
                             #settings_8.tab-pane.fade(role='tabpanel')
                               // Row

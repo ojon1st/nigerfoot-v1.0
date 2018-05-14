@@ -39,6 +39,7 @@ router.get('/game/:id/update', user_controller.game_update_get);
 // POST request to update chapitre.
 router.post('/game/:id/update', user_controller.game_update_post);
 
+
 //POST propnostics
 router.post('/sumbit_pronostic', user_controller.prono_update_post);
 

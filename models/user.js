@@ -16,6 +16,7 @@ const UserSchema = new Schema({
     userprofileimage:{type: String, default: ''},
     userid: {type: Number},
     joinedGroups:[{type: Schema.ObjectId, ref: 'Groupe'}],
+    userscore:{type: Number, default:0},
     userprono:
         { prteam11:{type:Number}, 
           prteam12:{type:Number},
@@ -158,7 +159,7 @@ UserSchema.pre('save', function(next){
 UserSchema
 .virtual('url')
 .get(function () {
-  return '/'+this.userpseudo;
+  return '/'/*+this.userpseudo*/;
 });
 
 //UserSchema.plugin(passportLocalMongoose);

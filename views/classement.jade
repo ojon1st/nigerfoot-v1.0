@@ -1,0 +1,183 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no')
+    title Mon Profil
+    meta(name='description', content='Nigerfoot est un site de pronostics gratuit')
+    meta(name='keywords', content='Niger, niger, digital, niger digital, pronostics, football, foot, cm18, coupe du monde, 2018')
+    meta(name='NIGER DIGITAL', content='hencework')
+    // Favicon
+    link(rel='shortcut icon', href='favicon.ico')
+    link(rel='icon', href='favicon.ico', type='image/x-icon')
+    // Favicon
+    link(rel='shortcut icon', href='favicon.ico')
+    link(rel='icon', href='favicon.ico', type='image/x-icon')
+    // Custom CSS
+    link(href='/dist/css/style.css', rel='stylesheet', type='text/css')
+    // Custom CSS
+    link(href='/dist/css/custom.css', rel='stylesheet', type='text/css')
+  body
+    // Preloader
+    .preloader-it
+      .la-anim-1
+    // /Preloader
+    .wrapper.theme-1-active.pimary-color-red
+      // Top Menu Items
+      nav.navbar.navbar-inverse.navbar-fixed-top
+        //
+          <div class="mobile-only-brand pull-left">
+          <div class="nav-header pull-left">
+          <div class="logo-wrap">
+          <a href="index.html">
+          <img class="brand-img" src="dist/img/logo.png" alt="brand"/>
+          <span class="brand-text">Hound</span>
+          </a>
+          </div>
+          </div>
+          </div>
+        .pull-left.mt-10.ml-50
+          a(href='index.html')
+            img.brand-img(src='/dist/img/logo.png', alt='brand')
+            span.brand-text NIGER FOOT
+      // /Top Menu Items
+      // /Right Sidebar Menu
+      // Main Content
+      .page-wrapper
+        .container-fluid.pt-25
+          // Row
+          .row
+            .col-md-6
+              .row
+                .panel.panel-default.card-view
+                  .panel-heading
+                    .pull-left
+                      h6.panel-title.txt-dark Match Débuté - Statut started
+                    .clearfix
+                  .panel-wrapper.collapse.in
+                    .panel-body
+                      .row
+                        .col-sm-12.col-xs-12
+                          .form-wrap
+                            form(method='POST' action='/users/close-game')
+                              .form-group.col-sm-4.col-xs-12
+                                label.control-label.mb-10 Numéro du match
+                                .input-group
+                                  .input-group-addon
+                                    i.icon-lock
+                                  select.form-control(name='gamenumber_started', data-style='btn-primary btn-outline')
+                                      for game in games_not_started
+                                        if (game.started == false)
+                                          option(value=game._id) #{game.gamenumber}
+                              .form-group.col-sm-4.col-sm-offset-4.col-xs-12
+                                label.control-label.mb-10 Valider le statut
+                                button.form-control.btn.btn-success.mr-10(type='submit') Submit
+              .row
+                .panel.panel-default.card-view
+                  .panel-heading
+                    .pull-left
+                      h6.panel-title.txt-dark Match Terminé - Score du Match
+                    .clearfix
+                  .panel-wrapper.collapse.in
+                    .panel-body
+                      div
+                        .col-sm-12.col-xs-12
+                          .form-wrap
+                            form(method='POST' action='/users/set-final-score')
+                              .form-group.col-sm-4.col-xs-12
+                                label.control-label.mb-10 Phase du match
+                                .input-group
+                                  .input-group-addon
+                                    i.icon-lock
+                                  select.form-control(type='select', name='gamenumber_score', data-style='btn-primary btn-outline')
+                                      for gamex in games_started
+                                        if (gamex.started == true)
+                                          option(value=gamex._id) #{gamex.gamenumber}
+                              .form-group.col-sm-2.col-xs-12
+                                label.control-label.mb-10 Team1
+                                input.form-control(type='number', name='put_final_rteam1', id='')
+                              .form-group.col-sm-2.col-xs-12
+                                label.control-label.mb-10 Team2
+                                input.form-control(type='number', name='put_final_rteam2', id='')
+                              .form-group.col-sm-4.col-xs-12
+                                label.control-label.mb-10 Valider le score
+                                button.form-control.btn.btn-success.mr-10(type='submit') Submit
+            .col-md-6
+              .panel.panel-default.card-view
+                .panel-heading
+                  .pull-left
+                    h6.panel-title.txt-dark Match Terminé - Mise à jour des Scores pour chaque utilisateur
+                  .clearfix
+                .panel-wrapper.collapse.in
+                  .panel-body
+                    div
+                      .col-sm-12.col-xs-12
+                        .form-wrap
+                          form(method='POST' action='/users/generate-classement')
+                            .form-group.col-sm-4.col-xs-12
+                              label.control-label.mb-10 Numéro du match
+                              .input-group
+                                .input-group-addon
+                                  i.icon-lock
+                                select.form-control(type='select', name='gamenumber_rank', data-style='btn-primary btn-outline')
+                                  for gamex in games_started
+                                    if (gamex.started == true)
+                                      option(value=gamex._id) #{gamex.gamenumber}
+                            .form-group.col-sm-4.col-sm-offset-4.col-xs-12
+                              label.control-label.mb-10 Générer le classement
+                              button.form-control.btn.btn-success.mr-10(type='submit') Submit
+            .col-md-6
+              .panel.panel-default.card-view
+                .panel-heading
+                  .pull-left
+                    h6.panel-title.txt-dark Match Terminé - Générer un classement statique
+                  .clearfix
+                .panel-wrapper.collapse.in
+                  .panel-body
+                    div
+                      .col-sm-12.col-xs-12
+                        .form-wrap
+                          form(method='POST' action='/users/generate-classement-state')
+                            .form-group.col-sm-4.col-xs-12
+                              label.control-label.mb-10 Numéro du match
+                              .input-group
+                                .input-group-addon
+                                  i.icon-lock
+                                select.form-control(type='select', name='gamenumber_for_rank', data-style='btn-primary btn-outline')
+                                  for gamex in games_started
+                                    if (rankmax)
+                                      if (gamex.started == true && gamex.gamenumber > rankmax.rankaftergame)
+                                        option(value=gamex.gamenumber) #{gamex.gamenumber}
+                                    else
+                                      option(value=gamex.gamenumber) #{gamex.gamenumber}
+                                      
+                            .form-group.col-sm-4.col-sm-offset-4.col-xs-12
+                              label.control-label.mb-10 Générer le classement
+                              button.form-control.btn.btn-success.mr-10(type='submit') Submit
+          // /Row
+        // Footer
+        footer.footer.container-fluid.pl-30.pr-30
+          .row
+            .col-sm-12
+              p 2018 © NIGER FOOT. by NIGER DIGITAL TALENTS
+        // /Footer
+      // /Main Content
+    // /#wrapper
+    // JavaScript
+    // jQuery
+    script(src='/vendors/bower_components/jquery/dist/jquery.min.js')
+    // Bootstrap Core JavaScript
+    script(src='/vendors/bower_components/bootstrap/dist/js/bootstrap.min.js')
+    // Slimscroll JavaScript
+    script(src='/dist/js/jquery.slimscroll.js')
+    // Fancy Dropdown JS
+    script(src='/dist/js/dropdown-bootstrap-extended.js')
+    // Owl JavaScript
+    script(src='/vendors/bower_components/owl.carousel/dist/owl.carousel.min.js')
+    // Switchery JavaScript
+    script(src='/vendors/bower_components/switchery/dist/switchery.min.js')
+    // Data table JavaScript
+    script(src='/vendors/bower_components/datatables/media/js/jquery.dataTables.min.js')
+    // Init JavaScript
+    script(src='/dist/js/init.js')
+    script(src='/dist/js/widgets-data.js')

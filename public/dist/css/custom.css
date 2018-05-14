@@ -59,3 +59,12 @@
         
     }
 }
+@media only screen and (max-width: 414px) {
+.title-format{
+    font-size: 26px;    
+    }
+}
+
+.header-btn-style.btn, .wizard > .actions .disabled a, .wizard > .actions .disabled a:hover, .wizard > .actions .disabled a:active, .wizard > .actions a, .wizard > .actions a:hover, .wizard > .actions a:active, .dt-buttons .dt-button, .tablesaw-sortable th.tablesaw-sortable-head button, .sweet-alert button, .owl-theme .owl-nav [class*="owl-"], button.fc-agendaDay-button.fc-state-default.fc-corner-right, button.fc-month-button.fc-state-default.fc-corner-left, button.fc-agendaWeek-button, .fc-prev-button, .fc-next-button, .fc-today-button{
+    padding: 10px 10px;
+}
