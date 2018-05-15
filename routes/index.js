@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const User = require('../models/user');
 const router = express.Router();
-const user_controller = require('../controllers/usercontroller');
+const user_controller = require('../controllers/userController');
 
 router.get('/', (req, res) => {
     res.render('index', { user : req.user });
