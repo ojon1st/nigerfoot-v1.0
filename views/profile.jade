@@ -70,16 +70,21 @@ html(lang='en')
                                     span.counter-anim #{myrank.usrrank}
                                 span.counts-text.block Classement Général
                               if (mongroupe)
-                                .col-xs-12.text-center
-                                  span.counts.block.head-font
-                                    span.counter-anim 234
-                                  span.counts-text.block #{mongroupe.groupname}
+                                 each groupemate in mongrouperank
+                                   if (groupemate.usrid.toString() == user._id.toString())
+                                    .col-xs-12.text-center
+                                      span.counts.block.head-font
+                                        span.counter-anim #{groupemate.usrrank}
+                                      span.counts-text.block #{mongroupe.groupname}
                               if (groupes)
+                                - var i = 0
                                 each group in groupes
-                                  .col-xs-12.text-center
-                                    span.counts.block.head-font
-                                      span.counter-anim 898
-                                    span.counts-text.block #{group.groupname}
+                                  each groupemate in groupesranks[i]
+                                    if (groupemate.usrid.toString() == user._id.toString()) 
+                                      .col-xs-12.text-center
+                                        span.counts.block.head-font
+                                          span.counter-anim #{groupemate.usrrank}
+                                        span.counts-text.block #{group.groupname}
                             button.btn.btn-default.btn-block.btn-outline.btn-anim.mt-30(data-toggle='modal', data-target='#myModal')
                               i.fa.fa-pencil
                               span.btn-text edit profile
