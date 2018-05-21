@@ -8,7 +8,7 @@ html(lang='en')
     meta(name='keywords', content='Niger, niger, digital, niger digital, pronostics, football, foot, cm18, coupe du monde, 2018')
     meta(name='NIGER DIGITAL', content='hencework')
     // Favicon
-    link(rel='shortcut icon', href='favicon.ico')
+    link(rel='shortcut icon', href='/favicon.ico')
     link(rel='icon', href='favicon.ico', type='image/x-icon')
     // Morris Charts CSS
     link(href='/vendors/bower_components/morris.js/morris.css', rel='stylesheet', type='text/css')
@@ -60,6 +60,21 @@ html(lang='en')
                                 input.upload(type='file')
                             h5.block.mt-10.mb-5.weight-500.capitalize-font.txt-danger #{user.username}
                             h6.block.pb-20.text-lowercase @#{user.userpseudo}
+                            #fb-root
+                                script.
+                                  (function(d, s, id) {
+                                  var js, fjs = d.getElementsByTagName(s)[0];
+                                  if (d.getElementById(id)) return;
+                                  js = d.createElement(s); js.id = id;
+                                  js.src = 'https://connect.facebook.net/fr_FR/sdk.js#xfbml=1&version=v3.0&appId=661904673952033&autoLogAppEvents=1';
+                                  fjs.parentNode.insertBefore(js, fjs);
+                                  }(document, 'script', 'facebook-jssdk'));
+                            .fb-like(data-href='https://nigerfoot.com', data-layout='button_count', data-action='like', data-size='large', data-show-faces='true', data-share='true')
+                            
+                            a.twitter-share-button(href='<a class="vglnk" href="https://twitter.com/share" rel="nofollow"><span>https</span><span>://</span><span>twitter</span><span>.</span><span>com</span><span>/</span><span>share</span></a>', data-hashtags='your_hash_tag', data-via='your_screen_name', data-count='horizontal') Tweet
+                            script.
+                              !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+
                             
                             label(class='userid' data-userid='#{user._id}' hidden='')
                           .social-info
@@ -87,7 +102,7 @@ html(lang='en')
                                         span.counts-text.block #{group.groupname}
                             button.btn.btn-default.btn-block.btn-outline.btn-anim.mt-30(data-toggle='modal', data-target='#myModal')
                               i.fa.fa-pencil
-                              span.btn-text edit profile
+                              span.btn-text Voir le profil
                             #myModal.modal.fade.in(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
                               .modal-dialog
                                 .modal-content
@@ -562,44 +577,8 @@ html(lang='en')
     script(src='/dist/js/init.js')
     script(src='/dist/js/widgets-data.js')
     //script.
-          $(document).ready(function() {
-          $('body').css('background-image', 'url(https://www.pickthebrain.com/blog/wp-content/uploads/2015/12/8-things-successful-people-perform-differently-from-others.jpg)')
-          $('#submit_prono').click(function(){
-              var userid = $('.userid').attr('data-userid');
-              var docs = [];
-              $('.gamebody').each(function() {
-                var i = 1;
-                var gameid_item = '',
-                    prteam1_item = '',
-                    prteam2_item = '';
-                var doc = [{user:'',
-                           game:'',
-                           prteam1:'',
-                           prteam2:''}]
-                gameid_item = $(this).attr('data-gameid');
-                prteam1_item = $('#prteam1'+ gameid_item).val();
-                prteam2_item = $('#prteam2' + gameid_item).val();
-                doc.user = userid
-                doc.game = gameid_item
-                doc.prteam1 = prteam1_item
-                doc.prteam2 = prteam2_item
-                
-                docs.push(doc);
-                });
-                /*alert(docs)
-                return*/
-                $.ajax({
-                    type: 'POST',
-                    url: '/users/update-pronostic',
-                    data: JSON.stringify(docs), // here I send the data when the button on the browser is clicked.
-                    dataType: "json"
-                }).done(function( msg ) {
-                    console.log( "Data Saved: " + msg );
-                }).fail(function(msg){
-                    console.log("Fail! " +msg.data);
-                });
-              
-          
-          });
-          });
-          
+      function updateTwitterValues(share_url, title) {
+          $(container_div_name).html('&nbsp;');
+          $(container_div_name).html('<a href="https://twitter.com/share" class="twitter-share-button" data-url="' + share_url +'" data-size="large" data-text="' + title + '" data-count="none">Tweet</a>');
+          twttr.widgets.load();
+      }
