@@ -2,7 +2,7 @@ const express = require('express');
 const passport = require('passport');
 const User = require('../models/user');
 const router = express.Router();
-var user_controller = require('../controllers/usercontroller');
+var user_controller = require('../controllers/userController');
 
 router.get('/', (req, res) => {
     res.render('index', { user : req.user });
@@ -21,6 +21,13 @@ router.post('/register', user_controller.user_register_post);
 router.get('/login', user_controller.user_login_get);
 
 router.post('/login', user_controller.user_login_post);
+
+//Password reset
+router.get('/forgotpassword', user_controller.user_fpassword_get);
+
+router.post('/forgotpassword', user_controller.user_fpassword_post);
+
+router.post('/newpassword/:id', user_controller.user_newpassword_post);
 
 // Logout
 router.get('/logout', user_controller.user_logout_get);

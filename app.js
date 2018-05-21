@@ -10,6 +10,7 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 var bcrypt = require('bcryptjs');
+var html2canvas = require('html2canvas');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
