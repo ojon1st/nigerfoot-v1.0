@@ -482,6 +482,7 @@ exports.user_register_get = function (req, res, next) {
 };
 
 
+
 exports.user_register_post = [
 
     // Validate that the name field is not empty.
@@ -523,31 +524,55 @@ exports.user_register_post = [
         }
 
         if (!errors.isEmpty()) {
+            
             // There are errors. Render the form again with sanitized values/error messages.
-            res.render('register', {
-                title: 'register',
-                user: user,
-                errors: errors.array()
-            });
+            res.render('register', {title: 'register', user: user, errors: errors.array()});
             return;
         } else {
-            
-                    User.findOne({
-                        'userpseudo': req.body.userpseudo
-                    })
-                    .exec(function (err, found_user) {
-                        if (err) {
-                            return next(err);
-                        }
+                    async.parallel({
+                    tel: function(callback) {
+                        User.findOne({'userphone': req.body.userphone})
+                            .exec(callback);
+                    },
+                    pseudo: function(callback) {
+                        User.findOne({'userpseudo': req.body.userpseudo})
+                            .exec(callback);
+                    },
+                    mail: function(callback) {
+                        User.findOne({'usermail': req.body.usermail})
+                            .exec(callback);
+                    }
+        }, function (err, founduser) {
+                if (err) {return next(err);}
+                    
 
-                        if (found_user) {
-                            // Matiere exists, redirect to its detail page.
-                            res.redirect(found_user.url);
+                        if (founduser.tel) {
+                            // User exists, with same tel.
+                            req.flash('error', 'Le Numéro de téléphone saisi existe déjà');
+                            res.render('register', {title: 'register', user: user});
+                            return;
+                        }else if (founduser.pseudo) {
+                            // User exists, with same pseudo.
+                            req.flash('error', 'Le pseudo saisi existe déjà');
+                            res.render('register', {title: 'register', user: user});
+                            return;
+                        }else if (founduser.mail) {
+                            // User exists, with same email.
+                            req.flash('error', 'L\'email saisi existe déjà');
+                            res.render('register', {title: 'register', user: user});
+                            return;
                         } else {
                             
                             user.save(function (err) {
                                 if (err) {
-                                    return next(err);
+                                    
+                                    // Duplicate user
+                                    if ( err && err.code === 11000 ) {
+                                        req.flash('error', 'Cet utilisateur existe déjà');
+                                        res.render('register', {title: 'register', user: user, errors: errors.array()});
+                                        return next(err);
+                                      }
+                                    
                                 }
                                 Rank.findOne()
                                         .sort({
@@ -586,9 +611,84 @@ exports.user_login_get = function (req, res, next) {
     });
 };
 
+
+exports.user_fpassword_get = function(req, res, next){
+    res.render('forgotpassword', {
+        title: 'Mot de passe oublié'
+    });
+}
+
+exports.user_fpassword_post = [
+    
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+
+
+        // Create a genre object with escaped and trimmed data.
+        var user = new User({
+            userphone: req.body.userphone,
+            userpseudo: req.body.userpseudo,
+            usermail: req.body.useremail
+        });
+
+
+        if (!errors.isEmpty()) {
+            
+            // There are errors. Render the form again with sanitized values/error messages.
+            res.render('forgotpassword', {title:'Mot de Passe oublié', user: user, errors: errors.array()});
+            return;
+        } else {
+            //console.log('ok')
+            User.findOne({
+            userphone:req.body.userphone,
+            usermail:req.body.usermail,
+            userpseudo:req.body.userpseudo
+            }).exec(function (err, found_user) {
+                //console.log('exec function')
+                if (err) {return next(err)}
+                if (!found_user) {
+                    return done(null, false, {message: 'L\'utilisateur ' + req.body.userpseudo + ' est inconnu'});
+                }
+                // User found and compare password.
+                
+                //console.log(found_user);
+                res.render('newpassword', {title:'Nouveau Mot de Passe', user: found_user});
+                return;
+            });
+            
+        }
+    }
+];
+
+exports.user_newpassword_post = [
+     // Process request after validation and sanitization.
+    (req, res, next) => {
+        
+        if (!req.body.userpassword === req.body.userpasswordverif) {
+            return res.render('newpassword', {
+                errors: 'Ressaisir votre mot de passe'
+            });
+        }
+        
+        
+        User.findOne({_id:req.params.id}).exec(function (err, theuserwithnewpswd) {
+                //console.log('exec function')
+                if (err) {return next(err)}
+                theuserwithnewpswd.userpassword = req.body.userpassword;
+                theuserwithnewpswd.save();
+                //console.log(found_user);
+                res.redirect('/login');
+
+            });
+    }
+];
+
 exports.user_logout_get = function (req, res, next) {
     req.logout();
-    req.flash('success', 'Vous êtes maintenant déconnecté');
+    req.flash('success', 'Vous êtes maintenant déconnecté. Renseigner les infos pour vous connecter à nouveau.');
     res.redirect('/');
 };
 exports.user_login_post = [
@@ -596,7 +696,7 @@ exports.user_login_post = [
         min: 1
     }).trim(),
     passport.authenticate('local', {
-        failureRedirect: '/',
+        failureRedirect: '/login',
         failureFlash: 'Votre Pseudo ou mot de passe est incorrect.'
     }),
     (req, res, next) => {
@@ -725,8 +825,7 @@ exports.update_group_post = [
                                 found_group.joinedUsers.push(theuser);
                                 found_group.save();
                             });
-                            /*theuser.joinedGroups.cid = '';
-                            device.save();*/
+                            
                         });
                     });
 
@@ -1162,20 +1261,6 @@ exports.update_score_post = [
 
                         //console.log('user_scenario:' + user_scenario)
                     }
-
-                    //console.log(theuser.userprono['prteam'+results.game.gamenumber+'1']) 
-
-                    /*if (theuser.userprono['prteam'+req.body.gamenumber_rank+'1'] === results.game.rteam1 &&                     theuser.userprono['prteam'+req.body.gamenumber_rank+'2'] === results.game.rteam2){
-
-                        console.log('score exact 1000 points')
-                    } else if{
-
-                    }
-                    theuser.joinedGroups.push(found_group);
-                    theuser.save(function (err) {
-                        found_group.joinedUsers.push(theuser);
-                        found_group.save();
-                      });*/
 
                 });
             });
