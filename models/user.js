@@ -8,10 +8,10 @@ const passportLocalMongoose = require('passport-local-mongoose');
 var SALT_WORK_FACTOR = 10;
 
 const UserSchema = new Schema({
-    username: {type: String, required:true},
+    username: {type: String},
     userphone: {type: Number, required: true, unique: true},
     userpseudo: {type: String, unique:true, required: true},
-    userpassword: {type: String, required: true},
+    userpassword: {type: String},
     usermail: {type: String, required: true, unique:true},
     userprofileimage:{type: String, default: ''},
     userid: {type: Number},
@@ -136,7 +136,7 @@ UserSchema.pre('save', function(next){
 UserSchema.pre('save', function(next){
     var doc = this;
     // only hash the password if it has been modified (or is new)
-    if (!doc.isModified('userpassword')){ 
+    if (!doc.isModified('userpassword')){
         return next();
     } else{
         // generate a salt
@@ -159,7 +159,7 @@ UserSchema.pre('save', function(next){
 UserSchema
 .virtual('url')
 .get(function () {
-  return '/'+this.userpseudo;
+  return '/';
 });
 
 //UserSchema.plugin(passportLocalMongoose);
