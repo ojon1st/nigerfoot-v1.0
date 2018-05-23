@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     userpseudo: {type: String, unique:true, required: true},
     userpassword: {type: String},
     usermail: {type: String, required: true, unique:true},
-    userprofileimage:{type: String, default: ''},
+    userprofileimage:{ data: Buffer, contentType: String },
     userid: {type: Number},
     joinedGroups:[{type: Schema.ObjectId, ref: 'Groupe'}],
     userscore:{type: Number, default:0},
