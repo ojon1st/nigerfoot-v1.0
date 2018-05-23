@@ -1198,7 +1198,41 @@ exports.update_score_post = [
                 var scenario = results.game.rteam1 - results.game.rteam2;
 
             }
-
+            
+            var max_points, middle_points, low_points = 0;
+            var game_level = results.game.gametype;
+            
+            switch (game_level) {
+                case 32:
+                    max_points = 1000;
+                    middle_points = 600;
+                    low_points = 250;
+                    break;
+                case 16:
+                    max_points = 1200;
+                    middle_points = 800;
+                    low_points = 300;
+                    break;
+                case 4:
+                    max_points = 1500;
+                    middle_points = 1000;
+                    low_points = 500;
+                    break;
+                case 2:
+                    max_points = 2000;
+                    middle_points = 1500;
+                    low_points = 600;
+                    break;
+                case 3:
+                    max_points = 2500;
+                    middle_points = 1800;
+                    low_points = 800;
+                    break;
+                case  1:
+                    max_points = 10000;
+                    middle_points = 5000;
+                    low_points = 1000;
+            }
 
             User.find({}, function (err, users) {
                 users.forEach(function (theuser) {
@@ -1208,53 +1242,60 @@ exports.update_score_post = [
                         var uprteam2 = theuser.userprono['prteam' + results.game.gamenumber + '2'];
 
                         var user_scenario = theuser.userprono['prteam' + results.game.gamenumber + '1'] - theuser.userprono['prteam' + results.game.gamenumber + '2']
-
+                        // Match nul
                         if (scenario == 0 && user_scenario == 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
-                                theuser.userscore += 1000;
+                                // Bon score
+                                theuser.userscore += max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
-                                theuser.userscore += 600;
+                                // Bon résultat
+                                theuser.userscore += middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
-
+                        // team1 Vainqueur
                         if (scenario > 0 && user_scenario > 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
-                                theuser.userscore += 1000;
+                                // Bon score
+                                theuser.userscore += max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
-                                theuser.userscore += 600;
+                                // Bon résultat
+                                theuser.userscore += middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
 
-
+                        // team2 Vainqueur
                         if (scenario < 0 && user_scenario < 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
-                                theuser.userscore += 1000;
+                                // Bon score
+                                theuser.userscore += max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
-                                theuser.userscore += 600;
+                                // Bon résultat
+                                theuser.userscore += middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
 
-
+                        // Mauvais résultat
                         if (scenario > 0 && user_scenario < 0) {
-                            theuser.userscore += 250;
+                            
+                            theuser.userscore += low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
-
+                        // Mauvais résultat
                         if (user_scenario > 0 && scenario < 0) {
-                            theuser.userscore += 250;
+                            theuser.userscore += low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
@@ -1329,7 +1370,19 @@ exports.create_classement_post = [
     }
 ];
 
-
+exports.save_avatar_post = [
+    (req, res, next) => {
+        // Create a genre object with escaped and trimmed data.
+        /*var user = new User({
+            userphone: req.body.userphone,
+            userpseudo: req.body.userpseudo,
+            usermail: req.body.useremail,
+            
+        });*/
+        if(req.files) console.log('ok')
+        if(req.body.avatar) console.log('avatar ok')
+    }
+];
 passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
