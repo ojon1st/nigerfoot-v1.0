@@ -33,7 +33,7 @@ block content
                           input.form-control(type='text', required='true', name='username', placeholder='Nom et Prénom' value=(undefined===user ? '' : user.username))
                         .form-group
                           label.control-label.mb-10(for='') Téléphone
-                          input.form-control(type='tel', required='true', name='userphone', maxlength='8', placeholder='8 chiffres Ex: 85 90 89 93' value=(undefined===user ? '' : user.userphone))
+                          input.form-control(type='tel', required='true', name='userphone', minlength='8' maxlength='8', placeholder='8 chiffres Ex: 85 90 89 93' value=(undefined===user ? '' : user.userphone))
                         .form-group
                           label.control-label.mb-10(for='') Pseudo
                           input#noSpacesField.form-control(type='text', required='true', name='userpseudo' placeholder='pseudo' value=(undefined===user ? '' : user.userpseudo))

@@ -7,6 +7,7 @@ html(lang='en')
     meta(name='description', content='Nigerfoot est un site de pronostics gratuit')
     meta(name='keywords', content='Niger, niger, digital, niger digital, pronostics, football, foot, cm18, coupe du monde, 2018')
     meta(name='NIGER DIGITAL', content='hencework')
+    meta(property='og:image', content='/img/login-background.jpg')
     // Favicon
     link(rel='shortcut icon', href='/favicon.ico')
     link(rel='icon', href='favicon.ico', type='image/x-icon')
@@ -54,10 +55,11 @@ html(lang='en')
                             .profile-image-overlay
                           .profile-info.text-center
                             .profile-img-wrap
-                              img.inline-block.mb-10(src='/dist/img/mock1.jpg', alt='user photo')
+                              img#image-preview.inline-block.mb-10(src='/dist/img/mock1.jpg', alt='user photo')
                               .fileupload.btn.btn-default
                                 span.btn-text edit
-                                input.upload(type='file')
+                                //form(method='POST' action='/users/upload-picture' enctype='multipart/form-data')
+                                input#input-image-hidden.upload(type='file', name='avatar' onchange='uploadavatar(this.files[0])' accept='image/jpeg, image/png' enctype='multipart/form-data')
                             h5.block.mt-10.mb-5.weight-500.capitalize-font.txt-danger #{user.username}
                             h6.block.pb-20.text-lowercase @#{user.userpseudo}
                             #fb-root
@@ -71,7 +73,7 @@ html(lang='en')
                                   }(document, 'script', 'facebook-jssdk'));
                             .fb-like(data-href='https://nigerfoot.com', data-layout='button_count', data-action='like', data-size='large', data-show-faces='true', data-share='true')
                             
-                            a.twitter-share-button(href='<a class="vglnk" href="https://twitter.com/share" rel="nofollow"><span>https</span><span>://</span><span>twitter</span><span>.</span><span>com</span><span>/</span><span>share</span></a>', data-hashtags='your_hash_tag', data-via='your_screen_name', data-count='horizontal') Tweet
+                            a.twitter-share-button(href='<a class="vglnk" href="https://twitter.com/share" rel="nofollow"><span>https</span><span>://</span><span>twitter</span><span>.</span><span>com</span><span>/</span><span>share</span></a>', data-hashtags='NigerFoot #CM18 #Russie2018', data-via='NigerFoot', data-count='horizontal') Tweet
                             script.
                               !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
 
@@ -108,7 +110,7 @@ html(lang='en')
                                 .modal-content
                                   .modal-header
                                     button.close(type='button', data-dismiss='modal', aria-hidden='true') ×
-                                    h5#myModalLabel.modal-title Edit Profile
+                                    h5#myModalLabel.modal-title Mon Profil
                                   .modal-body
                                     // Row
                                     .row
@@ -118,55 +120,40 @@ html(lang='en')
                                             .panel-body.pa-0
                                               .col-sm-12.col-xs-12
                                                 .form-wrap
-                                                  form(method='POST' action='')
+                                                  form
                                                     .form-body.overflow-hide
                                                       .form-group
-                                                        label.control-label.mb-10(for='exampleInputuname_1') Name
+                                                        label.control-label.mb-10(for='') Nom
                                                         .input-group
                                                           .input-group-addon
                                                             i.icon-user
-                                                          input#exampleInputuname_1.form-control(type='text', placeholder='willard bryant')
+                                                          input.form-control(type='text', value = user.username readonly='readonly')
                                                       .form-group
-                                                        label.control-label.mb-10(for='exampleInputEmail_1') Email address
+                                                        label.control-label.mb-10(for='') Pseudo
+                                                        .input-group
+                                                          .input-group-addon
+                                                            i.icon-user
+                                                          input.form-control(type='text', value = user.userpseudo readonly='readonly')
+                                                      .form-group
+                                                        label.control-label.mb-10(for='')  Adresse Email
                                                         .input-group
                                                           .input-group-addon
                                                             i.icon-envelope-open
-                                                          input#exampleInputEmail_1.form-control(type='email', placeholder='xyz@gmail.com')
+                                                          input.form-control(type='email', value = user.usermail readonly='readonly')
                                                       .form-group
-                                                        label.control-label.mb-10(for='exampleInputContact_1') Contact number
+                                                        label.control-label.mb-10(for='') Numéro de Téléphone
                                                         .input-group
                                                           .input-group-addon
                                                             i.icon-phone
-                                                          input#exampleInputContact_1.form-control(type='email', placeholder='+102 9388333')
+                                                          input.form-control(type='number', value = user.userphone readonly='readonly')
                                                       .form-group
-                                                        label.control-label.mb-10(for='exampleInputpwd_1') Password
+                                                        label.control-label.mb-10(for='') Mes Points
                                                         .input-group
                                                           .input-group-addon
-                                                            i.icon-lock
-                                                          input#exampleInputpwd_1.form-control(type='password', placeholder='Enter pwd', value='password')
-                                                      .form-group
-                                                        label.control-label.mb-10 Gender
-                                                        div
-                                                          .radio
-                                                            input#radio_1(type='radio', name='radio1', value='option1', checked='')
-                                                            label(for='radio_1')
-                                                              | M
-                                                          .radio
-                                                            input#radio_2(type='radio', name='radio1', value='option2')
-                                                            label(for='radio_2')
-                                                              | F
-                                                      .form-group
-                                                        label.control-label.mb-10 Country
-                                                        select.form-control(data-placeholder='Choose a Category', tabindex='1')
-                                                          option(value='Category 1') USA
-                                                          option(value='Category 2') Austrailia
-                                                          option(value='Category 3') India
-                                                          option(value='Category 4') UK
-                                                    .form-actions.mt-10
-                                                      button.btn.btn-success.mr-10.mb-30(type='submit') Update profile
+                                                            i.icon-score
+                                                          input.form-control(type='number', value = user.userscore readonly='readonly')
                                   .modal-footer
-                                    button.btn.btn-success.waves-effect(type='button', data-dismiss='modal') Save
-                                    button.btn.btn-default.waves-effect(type='button', data-dismiss='modal') Cancel
+                                    button.btn.btn-success.waves-effect(type='button', data-dismiss='modal') Fermer
                                 // /.modal-content
                               // /.modal-dialog
                 .col-lg-9.col-md-9.col-xs-12
@@ -190,9 +177,12 @@ html(lang='en')
                               a#earning_tab_8(data-toggle='tab', role='tab', href='#earnings_8', aria-expanded='false')
                                 span Groupe(s)
                             li(role='presentation')
-                              a#settings_tab_8(data-toggle='tab', role='tab', href='#settings_8', aria-expanded='false')
-                                span Résultats
-                            li.dropdown(role='presentation')
+                              a#dropdown_13_tab(data-toggle='tab', role='tab', href='#groupform', aria-expanded='false')
+                                if(mongroupe)
+                                  span Gérer mon groupe
+                                else
+                                  span Créer un groupe
+                            //-li.dropdown(role='presentation')
                               a#myTabDrop_7.dropdown-toggle(data-toggle='dropdown', href='#', aria-expanded='false')
                                 span Plus...
                                 span.caret
@@ -316,19 +306,93 @@ html(lang='en')
                                 br
                                 h4 Le classement se construit de la façon suivante :
                                 ul(style='padding-left:50px;list-style: disc;')
-                                  li 600 points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
-                                | Si on récapitule, il est donc possible de gagner 1000 points maximum par match et un total de 48000 points maximum sur l'ensemble de la phase de poule. Le vainqueur sera celui qui obtiendra le plus de points à l'issue des maths de toutes journées de la coupe du monde.
-                                
+                                  li 
+                                    span.txt-success 600 
+                                    span points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                  | Si on récapitule, il est donc possible de gagner 
+                                  span.txt-success 1000 
+                                  span points maximum par match et un total de 48000 points maximum sur l'ensemble de la 
+                                  span.txt-danger phase de poule.
+                                  li 
+                                    span.txt-success 800 
+                                    span points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                  | Si on récapitule, il est donc possible de gagner 
+                                  span.txt-success 1200 
+                                  span points maximum par match et un total de 48000 points maximum sur l'ensemble de la phase des 
+                                  span.txt-danger 16e de Finale.
+                                  li 
+                                    span.txt-success 1000 
+                                    span points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                  | Si on récapitule, il est donc possible de gagner 
+                                  span.txt-success 1500 
+                                  span points maximum par match et un total de 48000 points maximum sur l'ensemble de la phase des 
+                                  span.txt-danger 1/4 de Finale.
+                                  li 
+                                    span.txt-success 1500 
+                                    span points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                  | Si on récapitule, il est donc possible de gagner 
+                                  span.txt-success 2000 
+                                  span points maximum par match et un total de 48000 points maximum sur l'ensemble de la phase des 
+                                  span.txt-danger 1/2 Finale.
+                                  li 
+                                    span.txt-success 1800 
+                                    span points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                  | Si on récapitule, il est donc possible de gagner 
+                                  span.txt-success 2500 
+                                  span points maximum par match et un total de 48000 points maximum sur l'unique match de la 
+                                  span.txt-danger 3e Place.
+                                  li 
+                                    span.txt-success 5000 
+                                    span points gagnés par bon résultat (victoire de l’équipe domicile, nul, victoire de l’équipe extérieure)
+                                  | Si on récapitule, il est donc possible de gagner 
+                                  span.txt-success 10 000 
+                                  span points maximum par match et un total de 48000 points maximum sur l'unique match de la 
+                                  span.txt-danger Finale.
+                                  li Le vainqueur sera celui qui obtiendra le plus de points à l'issue des matchs de toutes journées de la coupe du monde.
                                 br
                                 br
-                                h4 Calcul des points et système de notation :
+                                h4 Exemple de calcul des points et système de notation (Phase de Groupe):
                                 br
-                                p Le calcul des points est réalisé selon 2 critères :
-                                ul(style='padding-left:50px;list-style: disc;')
-                                  li Le bon résultat rapporte 600 points et correspond à la capacité du pronostiqueur à trouver le  bon résultat du match. (victoire de l'équipe à domicile, match nul ou victoire extérieure)
-                                  li Le bon score rapporte 1000 points et correspond à la capacité du pronostiqueur à trouver le score exact du match. (nombre de buts inscrits à domicile et nombre de buts inscrits à l'extérieur)
-                                  li Le mauvais résultat : 250 points
-                                  li Vous n’avez pas pronostiqué pour un match : 0 points
+                                p Le calcul des points est réalisé selon 3 critères :
+                                div.col-md-12.col-sm-12.text-center
+                                  table.table
+                                    thead
+                                      tr
+                                        th Phase
+                                        th Score exact du match
+                                        th Bon résultat du match
+                                        th Mauvais résultat
+                                    tbody
+                                      tr
+                                        th Phase de poule
+                                        th 1000 points
+                                        th 600 points
+                                        th 250 points
+                                      tr
+                                        th 16e de Finale
+                                        th 1200 points
+                                        th 800 points
+                                        th 300 points
+                                      tr
+                                        th 1/4 de Finale
+                                        th 1500 points
+                                        th 1000 points
+                                        th 500 points
+                                      tr
+                                        th 1/2 de Finale
+                                        th 2000 points
+                                        th 1500 points
+                                        th 600 points
+                                      tr
+                                        th 3e Place
+                                        th 2500 points
+                                        th 1800 points
+                                        th 800 points
+                                      tr
+                                        th  Finale
+                                        th 10000 points
+                                        th 5000 points
+                                        th 1000 points
                                 br
                                 br
                                 h4 Voici donc les possibilités de résultats d'un pronostiqueur pour un match :
@@ -426,62 +490,6 @@ html(lang='en')
                                                     span  Points
                                                   // <button class="btn btn-success pull-right btn-xs fixed-btn">Follow</button>
                                                   .clearfix
-                                        
-                            #settings_8.tab-pane.fade(role='tabpanel')
-                              // Row
-                              .row
-                                .col-lg-12
-                                  div
-                                    .panel-wrapper.collapse.in
-                                      .panel-body.pa-0
-                                        .col-sm-12.col-xs-12
-                                          .form-wrap
-                                            form(action='#')
-                                              .form-body.overflow-hide
-                                                .form-group
-                                                  label.control-label.mb-10(for='exampleInputuname_01') Name
-                                                  .input-group
-                                                    .input-group-addon
-                                                      i.icon-user
-                                                    input.form-control(type='text', placeholder='willard bryant')
-                                                .form-group
-                                                  label.control-label.mb-10(for='exampleInputEmail_01') Email address
-                                                  .input-group
-                                                    .input-group-addon
-                                                      i.icon-envelope-open
-                                                    input#exampleInputEmail_01.form-control(type='email', placeholder='xyz@gmail.com')
-                                                .form-group
-                                                  label.control-label.mb-10(for='exampleInputContact_01') Contact number
-                                                  .input-group
-                                                    .input-group-addon
-                                                      i.icon-phone
-                                                    input#exampleInputContact_01.form-control(type='email', placeholder='+102 9388333')
-                                                .form-group
-                                                  label.control-label.mb-10(for='exampleInputpwd_01') Password
-                                                  .input-group
-                                                    .input-group-addon
-                                                      i.icon-lock
-                                                    input#exampleInputpwd_01.form-control(type='password', placeholder='Enter pwd', value='password')
-                                                .form-group
-                                                  label.control-label.mb-10 Gender
-                                                  div
-                                                    .radio
-                                                      input#radio_01(type='radio', name='radio1', value='option1', checked='')
-                                                      label(for='radio_01')
-                                                        | M
-                                                    .radio
-                                                      input#radio_02(type='radio', name='radio1', value='option2')
-                                                      label(for='radio_02')
-                                                        | F
-                                                .form-group
-                                                  label.control-label.mb-10 Country
-                                                  select.form-control(data-placeholder='Choose a Category', tabindex='1')
-                                                    option(value='Category 1') USA
-                                                    option(value='Category 2') Austrailia
-                                                    option(value='Category 3') India
-                                                    option(value='Category 4') UK
-                                              .form-actions.mt-10
-                                                button.btn.btn-success.mr-10.mb-30(type='submit') Update profile
                             #groupform.tab-pane.fade(role='tabpanel')
                               // Row
                               .row
@@ -576,9 +584,26 @@ html(lang='en')
     // Init JavaScript
     script(src='/dist/js/init.js')
     script(src='/dist/js/widgets-data.js')
-    //script.
-      function updateTwitterValues(share_url, title) {
-          $(container_div_name).html('&nbsp;');
-          $(container_div_name).html('<a href="https://twitter.com/share" class="twitter-share-button" data-url="' + share_url +'" data-size="large" data-text="' + title + '" data-count="none">Tweet</a>');
-          twttr.widgets.load();
+    script(type='text/javascript').
+      function HandleBrowseClick(input_image)
+      {
+      var fileinput = document.getElementById(input_image);
+      fileinput.click();
+      }
+    script.
+      function uploadavatar(file) {
+          document.getElementById('image-preview').src = window.URL.createObjectURL(file);
+          var mon_image = new FormData(file); 
+          alert(mon_image)
+          $.ajax({
+                   url : '/users/upload-picture',
+                   type : 'POST',
+                   data : mon_image,
+                   processData: false,  // tell jQuery not to process the data
+                   contentType: false,  // tell jQuery not to set contentType */
+                   success : function(data) {
+                       console.log(data);
+                       alert(data);
+                   }
+            });
       }
