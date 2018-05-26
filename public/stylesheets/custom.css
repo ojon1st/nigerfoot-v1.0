@@ -53,7 +53,7 @@
 
 @font-face {
     font-family: '!BoH-b';
-    src: url(fonts/!BoH-b.ttf);
+    src: url(/dist/fonts/!BoH-b.ttf);
 }
 
 #clockdiv {
