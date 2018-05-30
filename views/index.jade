@@ -22,38 +22,49 @@ html(lang='en')
     .preloader-it
       .la-anim-1
     // /Preloader
-    .wrapper.theme-4-active.pimary-color-red
-      
-      .page-wrapper.pb-0.pt-0.pl-0.pr-0.ml-0
-        .container-fluid
-          // Title
-          // /Title
+    .wrapper.theme-1-active.pimary-color-red
+      // Main Content
+      .container-fluid(style='')
+        .imgbox
+          #countdown
+            h3 Coupe du Monde RUSSIE 2018
+            #clockdiv
+              div
+                span.days
+                .smalltext Jours
+              div
+                span.hours
+                .smalltext Heures
+              div
+                span.minutes
+                .smalltext Minutes
+              div
+                span.seconds
+                .smalltext Secondes
+          picture
+            source(media='(max-width: 414px)', srcset='img/login-background-mobile.jpg')
+            source(media='(min-width: 414px)', srcset='img/login-background.jpg')
+            img.center-fit(src='img/login-background.jpg', alt='')
+          // <img class='center-fit' src="img/login-background.jpg" alt="">
+        button.btn.right_or_bottom
+          span 
+            a(class='txt-light' href='login') Connexion
+        button.btn.left_or_top
+          span 
+            a(class='txt-light' href='register') Nouveau
+      // Footer
+      footer.footer.container-fluid.pl-30.pr-30
           .row
-            .col-lg-12
-              .panel.panel-default.card-view
-                .panel-wrapper.collapse.in
-                  .panel-body
-                    .col-md-12
-                      div
-                        #owl_demo_1.owl-carousel.owl-theme
-                          .item(style='height:100%; overflow:auto; width:auto; ')
-                            picture
-                              source(media='(max-width: 414px)', srcset='/img/login-background-mobile.jpg')
-                              source(media='(min-width: 414px)', srcset='/img/login-background.jpg')
-                              img(src='/img/login-background.jpg', alt='terrain de foot')
-                              //img(src='/img/login-background.jpg' alt='Owl Image' class='autorotation')
-                            button.autorotation_r.img-responsive
-                              a(href='login')(style='color: gold') LOGIN
-                            button.autorotation_l.img-responsive
-                              a(href='register')(style='color: gold') REGISTER
-                      // Footer
-                      footer.footer.container-fluid.pl-30.pr-30
-                        .row
-                          .col-sm-12
-                            p 2017 © Hound. Pampered by Hencework
+            .col-sm-12
+              p(class='txt-light') 2018 © NIGER FOOT. By 
+                span
+                  a(href='http://nigerdigital.fr')
+                    span(style='color:#d5a627') NIGER 
+                    span(style='color:#4caf6l9') DIGITAL 
+                  | Talents  
         // /Footer
       // /Main Content
-    // /#wrapper
+
     // JavaScript
     // jQuery
     script(src='/vendors/bower_components/jquery/dist/jquery.min.js')
@@ -71,3 +82,42 @@ html(lang='en')
     script(src='/vendors/bower_components/switchery/dist/switchery.min.js')
     // Init JavaScript
     script(src='/dist/js/init.js')
+    script.
+      $(document).ready(function () {
+      function getTimeRemaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t / 1000) % 60);
+      var minutes = Math.floor((t / 1000 / 60) % 60);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+      var days = Math.floor(t / (1000 * 60 * 60 * 24));
+      return {
+      'total': t,
+      'days': days,
+      'hours': hours,
+      'minutes': minutes,
+      'seconds': seconds
+      };
+      }
+      function initializeClock(id, endtime) {
+      var clock = document.getElementById(id);
+      var daysSpan = clock.querySelector('.days');
+      var hoursSpan = clock.querySelector('.hours');
+      var minutesSpan = clock.querySelector('.minutes');
+      var secondsSpan = clock.querySelector('.seconds');
+      function updateClock() {
+      var t = getTimeRemaining(endtime);
+      daysSpan.innerHTML = t.days;
+      hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+      minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+      secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+      if (t.total <= 0) {
+      clearInterval(timeinterval);
+      }
+      }
+      updateClock();
+      var timeinterval = setInterval(updateClock, 1000);
+      }
+      var deadline = 'June 14 2018 15:59:59 GMT+0100';
+      initializeClock('clockdiv', deadline);
+      });
+

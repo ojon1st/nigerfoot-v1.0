@@ -1,6 +1,9 @@
 var express = require('express');
+var multer  = require('multer');
 var router = express.Router();
 var user_controller = require('../controllers/userController');
+
+var upload = multer({ storage: multer.memoryStorage() })
 
 /* GET users listing. */
 router.get('/', ensureAuthenticated, user_controller.user_profile_get);
@@ -23,6 +26,7 @@ router.post('/generate-classement', ensureAuthenticated, user_controller.update_
 // POST Clôture des pronostics et mise à jour du classement
 router.post('/generate-classement-state', ensureAuthenticated, user_controller.create_classement_post);
 
+router.post('/upload-picture', [ensureAuthenticated, upload.single('avatar')], user_controller.save_avatar_post);
 
 function ensureAuthenticated(req, res, next){
     if (req.isAuthenticated()){

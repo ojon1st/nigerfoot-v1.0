@@ -7,7 +7,7 @@ var RankSchema = new Schema({
     rankstate: [{usrid:{type: Schema.ObjectId},
                  usrpseudo:{type: String},
                  usrscore:{type:Number, default:0},
-                 usrrank:{type:String}}],
+                 usrrank:{type:Number}}],
     rankaftergame:{type: Number,required: true}
 });
 

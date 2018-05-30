@@ -8,10 +8,23 @@ var bcrypt = require('bcryptjs');
 var flash = require('connect-flash');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
-var {body, validationResult} = require('express-validator/check');
-var {sanitizeBody} = require('express-validator/filter');
+var {
+    body,
+    validationResult
+} = require('express-validator/check');
+var {
+    sanitizeBody
+} = require('express-validator/filter');
 
+var cloudinary = require('cloudinary');
+var Datauri = require('datauri');
 
+cloudinary.config({ 
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET 
+});
+console.log(process.env.CLOUDINARY_CLOUD_NAME, process.env.CLOUDINARY_API_KEY, process.env.CLOUDINARY_API_SECRET )
 
 exports.user_list = function (req, res, next) {
     // Get all authors and genres for form
@@ -93,31 +106,27 @@ exports.user_profile_get = function (req, res, next) {
                     rankaftergame: -1
                 })
                 .exec(callback);
-        },
+        }
     }, function (err, results) {
-        if (err) {return next(err);}
-
+        if (err) {
+            return next(err);
+        }
         async.parallel({
             myrank: function (callback) {
-                setTimeout(function () {
-                    var monrang = '';
-                    results.rankmax.rankstate.forEach(function (theuser) {
-                        //myrank = '';
-                        if (theuser.usrrank != '-'){
-                            monrang = theuser.usrrank
-                        }
-                        if (theuser.usrid.toString() == req.user._id) {
-                            theuser.usrrank = monrang;
-                            myrank = theuser;
-                        }
-                    });
-                    callback(null, myrank);
-                }, 500);
+                results.rankmax.rankstate.forEach(function (theuser) {
+                    
+                    if (theuser.usrid.toString() == req.user._id) {
+                        myrank = theuser;
+                    }
+
+                });
+                callback(null, myrank);
+
             },
             mongroupeusersarray: function (callback) { // Tableau de tous les users de mon *groupe*
                 setTimeout(function () {
                     var mongroupeusersarray = [];
-                    if (results.groupe){
+                    if (results.groupe) {
 
                         mongroupeusersarray.push(results.groupe.createdBy.toString());
                         for (var i = 0; i < results.groupe.joinedUsers.length; i++) {
@@ -131,105 +140,96 @@ exports.user_profile_get = function (req, res, next) {
             mesgroupesusersarray: function (callback) {
                 setTimeout(function () {
                     var mesgroupesusersarray = [];
-                        if (results.groupes){
+                    if (results.groupes) {
+
+                        results.groupes.joinedGroups.forEach(function (thegroup) {
                             
-                            results.groupes.joinedGroups.forEach(function (thegroup) {
-                                //console.log(thegroup.createdBy)
-                                var thisgroupeusersarray = [];
-                                thisgroupeusersarray.push(thegroup.createdBy._id.toString());
-                                for (var i = 0; i < thegroup.joinedUsers.length; i++) {
-                                    var joineduser = thegroup.joinedUsers[i];
-                                    thisgroupeusersarray.push(joineduser._id.toString());
+                            var thisgroupeusersarray = [];
+                            thisgroupeusersarray.push(thegroup.createdBy._id.toString());
+                            for (var i = 0; i < thegroup.joinedUsers.length; i++) {
+                                var joineduser = thegroup.joinedUsers[i];
+                                thisgroupeusersarray.push(joineduser._id.toString());
+                            }
+                            mesgroupesusersarray.push(thisgroupeusersarray)
+                        });
+                    }
+                    callback(null, mesgroupesusersarray);
+                }, 1000);
+            }
+        }, function (err, resultats) {
+            if (err) {
+                return next(err);
+            }
+
+            async.parallel({
+                mygrouperank: function (callback) {
+                    setTimeout(function () {
+                        var mongroupeclassarray = [];
+                        if (results.groupe) {
+                            var newarray = [];
+                            newarray = resultats.mongroupeusersarray;
+                            var newstring = '';
+                            results.rankmax.rankstate.forEach(function (theuser) {
+                                newstring = theuser.usrid.toString();
+
+                                if (newarray.includes(newstring)) {
+                                    mongroupeclassarray.push(theuser)
                                 }
-                                mesgroupesusersarray.push(thisgroupeusersarray)
+
                             });
                         }
-                        callback(null, mesgroupesusersarray);
-                    }, 1000);
-                }
-        }, function (err, resultats) {
-                if (err) {return next(err);}
-            
-                async.parallel({
-                    mygrouperank: function (callback) {
-                        setTimeout(function () {
-                            var mongroupeclassarray = [];
-                            if (results.groupe){
-                                var newarray = [];
-                                newarray = resultats.mongroupeusersarray;
+                        callback(null, mongroupeclassarray);
+                    }, 500);
+                },
+                allmygroupsranks: function (callback) {
+                    setTimeout(function () {
+                        var mesgroupesusersarray = resultats.mesgroupesusersarray;
+                        var mesgroupesclassarray = [];
+
+                        if (results.groupes) {
+                            for (var i = 0; i < mesgroupesusersarray.length; i++) {
+                                var thisgroupusersarray = mesgroupesusersarray[i];
+                                var thisgroupclassarray = [];
                                 var newstring = '';
-                                var rang_au_dessus = 0;
-                                var score_au_dessus = '';
                                 results.rankmax.rankstate.forEach(function (theuser) {
                                     newstring = theuser.usrid.toString();
 
-                                    if (newarray.includes(newstring)){
-                                        theuser.usrrank = rang_au_dessus;
-                                        if(theuser.usrscore != score_au_dessus){
-                                            theuser.usrrank = rang_au_dessus + 1;
-                                            score_au_dessus = theuser.usrscore
-                                            rang_au_dessus++
-                                        } 
-                                        mongroupeclassarray.push(theuser)
+                                    if (thisgroupusersarray.includes(newstring)) {
+                                        thisgroupclassarray.push(theuser);
                                     }
 
                                 });
+
+                                mesgroupesclassarray.push(thisgroupclassarray);
                             }
-                            callback(null, mongroupeclassarray);
-                        }, 500);
-                    },
-                    allmygroupsranks: function (callback) {
-                        setTimeout(function () {
-                            var mesgroupesusersarray = resultats.mesgroupesusersarray;
-                            var mesgroupesclassarray = [];
-                              
-                                if (results.groupes){
-                                    for (var i = 0; i < mesgroupesusersarray.length; i++) {
-                                        var thisgroupusersarray = mesgroupesusersarray[i];
-                                        var thisgroupclassarray = [];
-                                        var newstring = '';
-                                        var rang_au_dessus = 0;
-                                        var score_au_dessus = '';
-                                        results.rankmax.rankstate.forEach(function (theuser) {
-                                            newstring = theuser.usrid.toString();
 
-                                            if (thisgroupusersarray.includes(newstring)){
-                                                theuser.usrrank = rang_au_dessus;
-                                                if(theuser.usrscore != score_au_dessus){
-                                                    theuser.usrrank = rang_au_dessus + 1;
-                                                    score_au_dessus = theuser.usrscore
-                                                    rang_au_dessus++
-                                                } 
-                                                thisgroupclassarray.push(theuser)
-                                            }
+                        }
 
-                                        });
-                                        
-                                        mesgroupesclassarray.push(thisgroupclassarray);
-                                    }
-                                    
-                                }
+                        callback(null, mesgroupesclassarray);
+                    }, 1000);
+                }
+            }, function (err, resultat_final) {
+                if (err) {
+                    return next(err);
+                }
+                
+                res.render('profile', {
+                    title: 'Mon Profil',
+                    user: req.user,
+                    list_games: results.games,
+                    list_teams: results.teams,
+                    list_users: results.users,
+                    groupes: results.groupes.joinedGroups,
+                    mongroupe: results.groupe,
+                    rankmax: results.rankmax,
+                    myrank: resultats.myrank,
+                    groupesranks: resultat_final.allmygroupsranks,
+                    mongrouperank: resultat_final.mygrouperank
+                });
 
-                            callback(null, mesgroupesclassarray);
-                        }, 1000);
-                    }
-        }, function (err, resultat_final) {
-                if (err) {return next(err);}
-                // results is now equals to: {one: 1, two: 2}
-                    
-                //console.log(results.groupes)
-                //console.log(results.groupes.joinedGroups);
-                res.render('profile', {title: 'Mon Profil', user: req.user, list_games: results.games, list_teams: results.teams,
-                list_users: results.users, groupes: results.groupes.joinedGroups, mongroupe: results.groupe, rankmax: results.rankmax,
-                myrank: resultats.myrank,groupesranks:resultat_final.allmygroupsranks, mongrouperank:resultat_final.mygrouperank});
-                    
             });
-            
+
         });
-
-
-
-
     });
 
 };
@@ -524,82 +524,111 @@ exports.user_register_post = [
         }
 
         if (!errors.isEmpty()) {
-            
+
             // There are errors. Render the form again with sanitized values/error messages.
-            res.render('register', {title: 'register', user: user, errors: errors.array()});
+            res.render('register', {
+                title: 'register',
+                user: user,
+                errors: errors.array()
+            });
             return;
         } else {
-                    async.parallel({
-                    tel: function(callback) {
-                        User.findOne({'userphone': req.body.userphone})
-                            .exec(callback);
-                    },
-                    pseudo: function(callback) {
-                        User.findOne({'userpseudo': req.body.userpseudo})
-                            .exec(callback);
-                    },
-                    mail: function(callback) {
-                        User.findOne({'usermail': req.body.usermail})
-                            .exec(callback);
-                    }
-        }, function (err, founduser) {
-                if (err) {return next(err);}
+            async.parallel({
+                tel: function (callback) {
+                    User.findOne({
+                            'userphone': req.body.userphone
+                        })
+                        .exec(callback);
+                },
+                pseudo: function (callback) {
+                    User.findOne({
+                            'userpseudo': req.body.userpseudo
+                        })
+                        .exec(callback);
+                },
+                mail: function (callback) {
+                    User.findOne({'usermail': req.body.usermail}).exec(callback);
+                }
+            }, function (err, founduser) {
+                if (err) {
+                    return next(err);
+                }
+                
+                
+                if (founduser.tel) {
+                    // User exists, with same tel.
+                    req.flash('error', 'Le Numéro de téléphone saisi existe déjà');
+                    res.render('register', {
+                        title: 'register',
+                        user: user
+                    });
+                    return;
+                } else if (founduser.pseudo) {
+                    // User exists, with same pseudo.
+                    req.flash('error', 'Le pseudo saisi existe déjà');
+                    res.render('register', {
+                        title: 'register',
+                        user: user
+                    });
+                    return;
+                } else if (founduser.mail) {
+                    // User exists, with same email.
+                    req.flash('error', 'L\'email saisi existe déjà');
+                    res.render('register', {
+                        title: 'register',
+                        user: user
+                    });
+                    return;
+                } else {
                     
+                    user.save(function (err) {
+                        if (err) {
 
-                        if (founduser.tel) {
-                            // User exists, with same tel.
-                            req.flash('error', 'Le Numéro de téléphone saisi existe déjà');
-                            res.render('register', {title: 'register', user: user});
-                            return;
-                        }else if (founduser.pseudo) {
-                            // User exists, with same pseudo.
-                            req.flash('error', 'Le pseudo saisi existe déjà');
-                            res.render('register', {title: 'register', user: user});
-                            return;
-                        }else if (founduser.mail) {
-                            // User exists, with same email.
-                            req.flash('error', 'L\'email saisi existe déjà');
-                            res.render('register', {title: 'register', user: user});
-                            return;
-                        } else {
-                            
-                            user.save(function (err) {
-                                if (err) {
-                                    
-                                    // Duplicate user
-                                    if ( err && err.code === 11000 ) {
-                                        req.flash('error', 'Cet utilisateur existe déjà');
-                                        res.render('register', {title: 'register', user: user, errors: errors.array()});
-                                        return next(err);
-                                      }
-                                    
-                                }
-                                Rank.findOne()
-                                        .sort({
-                                            rankaftergame: -1
-                                        })
-                                        .exec(function (err, last_rank) {
-                                            if (err) {
-                                                return next(err);
-                                            }
-
-                                            if (last_rank){
-                                                
-                                            last_rank.rankstate.push({usrid:user._id, usrpseudo:user.userpseudo, usrscore:0, usrrank:'-'});
-                                            last_rank.save();
-                                            // Matiere saved. Redirect to matiere detail page.
-                                            req.flash('success', 'Vous êtes maintenant enregistré et pouvez vous connecter');
-                                            res.redirect('login');
-
-                                            }
+                            // Duplicate user
+                            if (err && err.code === 11000) {
+                                req.flash('error', 'Cet utilisateur existe déjà');
+                                res.render('register', {
+                                    title: 'register',
+                                    user: user,
+                                    errors: errors.array()
                                 });
-                                
-                                
-                            });
-                           
+                                return next(err);
+                            }
 
-        }
-    });
+                        }
+                        Rank.findOne()
+                            .sort({
+                                rankaftergame: -1
+                            })
+                            .exec(function (err, last_rank) {
+                                if (err) {
+                                    return next(err);
+                                }
+
+                                if (last_rank) {
+                                                                        
+                                    var last_user_ranked = last_rank.rankstate[last_rank.rankstate.length - 1];
+                                    var last_rank_value = last_user_ranked.usrrank;
+                                    last_rank.rankstate.push({
+                                        usrid: user._id,
+                                        usrpseudo: user.userpseudo,
+                                        usrscore: 0,
+                                        usrrank: last_rank_value
+                                    });
+                                    last_rank.save();
+                                    // Matiere saved. Redirect to matiere detail page.
+                                    req.flash('success', 'Vous êtes maintenant enregistré et pouvez vous connecter');
+                                    res.redirect('login');
+
+                                }
+                            });
+
+
+                    });
+
+
+                }
+            });
         }
     }
 ];
@@ -612,14 +641,14 @@ exports.user_login_get = function (req, res, next) {
 };
 
 
-exports.user_fpassword_get = function(req, res, next){
+exports.user_fpassword_get = function (req, res, next) {
     res.render('forgotpassword', {
         title: 'Mot de passe oublié'
     });
 }
 
 exports.user_fpassword_post = [
-    
+
     // Process request after validation and sanitization.
     (req, res, next) => {
 
@@ -636,29 +665,40 @@ exports.user_fpassword_post = [
 
 
         if (!errors.isEmpty()) {
-            
+
             // There are errors. Render the form again with sanitized values/error messages.
-            res.render('forgotpassword', {title:'Mot de Passe oublié', user: user, errors: errors.array()});
+            res.render('forgotpassword', {
+                title: 'Mot de Passe oublié',
+                user: user,
+                errors: errors.array()
+            });
             return;
         } else {
             //console.log('ok')
             User.findOne({
-            userphone:req.body.userphone,
-            usermail:req.body.usermail,
-            userpseudo:req.body.userpseudo
+                userphone: req.body.userphone,
+                usermail: req.body.usermail,
+                userpseudo: req.body.userpseudo
             }).exec(function (err, found_user) {
                 //console.log('exec function')
-                if (err) {return next(err)}
+                if (err) {
+                    return next(err)
+                }
                 if (!found_user) {
-                    return done(null, false, {message: 'L\'utilisateur ' + req.body.userpseudo + ' est inconnu'});
+                    return done(null, false, {
+                        message: 'L\'utilisateur ' + req.body.userpseudo + ' est inconnu'
+                    });
                 }
                 // User found and compare password.
-                
+
                 //console.log(found_user);
-                res.render('newpassword', {title:'Nouveau Mot de Passe', user: found_user});
+                res.render('newpassword', {
+                    title: 'Nouveau Mot de Passe',
+                    user: found_user
+                });
                 return;
             });
-            
+
         }
     }
 ];
@@ -666,23 +706,27 @@ exports.user_fpassword_post = [
 exports.user_newpassword_post = [
      // Process request after validation and sanitization.
     (req, res, next) => {
-        
+
         if (!req.body.userpassword === req.body.userpasswordverif) {
             return res.render('newpassword', {
                 errors: 'Ressaisir votre mot de passe'
             });
         }
-        
-        
-        User.findOne({_id:req.params.id}).exec(function (err, theuserwithnewpswd) {
-                //console.log('exec function')
-                if (err) {return next(err)}
-                theuserwithnewpswd.userpassword = req.body.userpassword;
-                theuserwithnewpswd.save();
-                //console.log(found_user);
-                res.redirect('/login');
 
-            });
+
+        User.findOne({
+            _id: req.params.id
+        }).exec(function (err, theuserwithnewpswd) {
+            //console.log('exec function')
+            if (err) {
+                return next(err)
+            }
+            theuserwithnewpswd.userpassword = req.body.userpassword;
+            theuserwithnewpswd.save();
+            //console.log(found_user);
+            res.redirect('/login');
+
+        });
     }
 ];
 
@@ -732,7 +776,9 @@ exports.user_login_post = [
 exports.create_group_post = [
 
     // Validate that the name field is not empty.
-    body('groupname', 'Le nom du Groupe est requis').isLength({min: 1}).trim(),
+    body('groupname', 'Le nom du Groupe est requis').isLength({
+        min: 1
+    }).trim(),
 
     // Process request after validation and sanitization.
     (req, res, next) => {
@@ -749,7 +795,10 @@ exports.create_group_post = [
 
         if (!errors.isEmpty()) {
             // There are errors. Render the form again with sanitized values/error messages.
-            res.render('profile', {title: 'Profile', errors: errors.array()});
+            res.render('profile', {
+                title: 'Profile',
+                errors: errors.array()
+            });
             return;
         } else {
             // Data from form is valid.
@@ -825,7 +874,7 @@ exports.update_group_post = [
                                 found_group.joinedUsers.push(theuser);
                                 found_group.save();
                             });
-                            
+
                         });
                     });
 
@@ -1148,6 +1197,7 @@ exports.set_final_score_post = [
                 if (err) {
                     return next(err);
                 }
+                console
                 res.render('classement', {
                     title: 'Update Game',
                     game: results.game,
@@ -1165,6 +1215,7 @@ exports.set_final_score_post = [
                 if (err) {
                     return next(err);
                 }
+                console.log(thegame)
                 // Successful - redirect to matiere detail page.
                 res.redirect('/users/classement');
             });
@@ -1182,11 +1233,6 @@ exports.update_score_post = [
             game: function (callback) {
                 Game.findById(req.body.gamenumber_rank).exec(callback);
             },
-            /*games_started: function (callback) {
-                Game.find({started:'true'})
-                .sort({gamenumber: -1})
-                .exec(callback);
-            },*/
         }, function (err, results) {
             if (err) {
                 return next(err);
@@ -1199,62 +1245,111 @@ exports.update_score_post = [
 
             }
 
+            var max_points, middle_points, low_points = 0;
+            var game_level = results.game.gametype;
+
+            switch (game_level) {
+                case 32:
+                    max_points = 1000;
+                    middle_points = 600;
+                    low_points = 250;
+                    break;
+                case 16:
+                    max_points = 1200;
+                    middle_points = 800;
+                    low_points = 300;
+                    break;
+                case 4:
+                    max_points = 1500;
+                    middle_points = 1000;
+                    low_points = 500;
+                    break;
+                case 2:
+                    max_points = 2000;
+                    middle_points = 1500;
+                    low_points = 600;
+                    break;
+                case 3:
+                    max_points = 2500;
+                    middle_points = 1800;
+                    low_points = 800;
+                    break;
+                case 1:
+                    max_points = 10000;
+                    middle_points = 5000;
+                    low_points = 1000;
+            }
 
             User.find({}, function (err, users) {
                 users.forEach(function (theuser) {
                     if (theuser.userprono['prteam' + results.game.gamenumber + '1'] != null && theuser.userprono['prteam' + results.game.gamenumber + '1'] != 'undefined' && theuser.userprono['prteam' + results.game.gamenumber + '2'] != null && theuser.userprono['prteam' + results.game.gamenumber + '2'] != 'undefined') {
-
+                        console.log(theuser.userpseudo)
                         var uprteam1 = theuser.userprono['prteam' + results.game.gamenumber + '1'];
                         var uprteam2 = theuser.userprono['prteam' + results.game.gamenumber + '2'];
 
-                        var user_scenario = theuser.userprono['prteam' + results.game.gamenumber + '1'] - theuser.userprono['prteam' + results.game.gamenumber + '2']
+                        var user_scenario = theuser.userprono['prteam' + results.game.gamenumber + '1'] - theuser.userprono['prteam' + results.game.gamenumber + '2'];
 
+                        var mon_score_actuel = theuser.userscore;
+                        // Match nul
                         if (scenario == 0 && user_scenario == 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
-                                theuser.userscore += 1000;
+                                // Bon score
+                                theuser.userscore = mon_score_actuel + max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
-                                theuser.userscore += 600;
+                                // Bon résultat
+                                theuser.userscore = mon_score_actuel + middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
 
+                        if (scenario == 0 && user_scenario != 0) {
+                            theuser.userscore = mon_score_actuel + low_points;
+                            theuser.save();
+                        }
+
+                        // team1 Vainqueur
                         if (scenario > 0 && user_scenario > 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
-                                theuser.userscore += 1000;
+                                // Bon score
+                                theuser.userscore = mon_score_actuel + max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
-                                theuser.userscore += 600;
+                                // Bon résultat
+                                theuser.userscore = mon_score_actuel + middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
 
-
+                        // team2 Vainqueur
                         if (scenario < 0 && user_scenario < 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
-                                theuser.userscore += 1000;
+                                // Bon score
+                                theuser.userscore = mon_score_actuel + max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
-                                theuser.userscore += 600;
+                                // Bon résultat
+                                theuser.userscore = mon_score_actuel + middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
 
-
+                        // Mauvais résultat
                         if (scenario > 0 && user_scenario < 0) {
-                            theuser.userscore += 250;
+
+                            theuser.userscore = mon_score_actuel + low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
-
+                        // Mauvais résultat
                         if (user_scenario > 0 && scenario < 0) {
-                            theuser.userscore += 250;
+                            theuser.userscore = mon_score_actuel + low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
@@ -1315,7 +1410,7 @@ exports.create_classement_post = [
                         usrid: theuser._id,
                         usrpseudo: theuser.userpseudo,
                         usrscore: theuser.userscore,
-                        usrrank: '-'
+                        usrrank: rang
                     });
                 }
 
@@ -1329,7 +1424,48 @@ exports.create_classement_post = [
     }
 ];
 
+exports.save_avatar_post = [
+    (req, res, next) => {
+        // Create a genre object with escaped and trimmed data.
+        /*var user = new User({
+            userphone: req.body.userphone,
+            userpseudo: req.body.userpseudo,
+            usermail: req.body.useremail,
+            
+        });*/
+        // if(req.files) console.log('ok')
+        // if(req.body.avatar) console.log('avatar ok')
 
+        // Is there any file?
+        if(!(req.file && req.file.buffer)) return next(new Error('No avatar to upload'));
+
+        // Get file extension
+        let fileExtension;
+        
+        if(req.file.mimetype === 'image/jpeg') fileExtension = '.jpg';
+        else if (req.file.mimetype === 'image/png') fileExtension = '.png';
+        else return next(new Error('Only JPEG and PNG are allowed.'))
+
+        // Convert the buffer to base64 URI
+        const datauri = new Datauri();
+        datauri.format(fileExtension, req.file.buffer);
+ 
+        // Upload to Cloudinary
+        cloudinary.v2.uploader.upload(datauri.content, { folder: "avatars" }, (error, result) => {
+            if(error || !result) return next(new Error('Failed to upload avatar'));
+            User.findByIdAndUpdate({
+                _id: req.user._id
+            }, {
+                $set: {
+                    "userprofileimage" : result.secure_url
+                }
+            }, (err) => {
+                if(err) return next(err);
+                res.send(result);
+            });
+        }); 
+    }
+];
 passport.serializeUser(function (user, done) {
     done(null, user.id);
 });

@@ -1,90 +1,294 @@
-.flag-size{
+.flag-size {
     width: 50px;
     height: 35px;
 }
 
-.team-name{
+.team-name {
     display: inline-block;
-    vertical-align:text-bottom;
+    vertical-align: text-bottom;
     font-size: 25px;
 }
 
-.input-team-score{
-    display:inline-block;
+.input-team-score {
+    display: inline-block;
     vertical-align: top;
     margin-top: 7px;
     width: 50px;
     text-align: center;
 }
-.input-game-started input{
+
+.input-game-started input {
     background-color: gold!important;
 }
 
 /*.owl-carousel .owl-item img{
     height: -webkit-fill-available!important;
 }*/
-.autorotation_r{
-    width: 10%;
+
+.container-fluid img {
+    width: 100%;
+    height: auto;
+}
+
+.imgbox {
+    display: grid;
+    height: 100%;
+}
+
+.center-fit {
+    max-width: 100%;
+    max-height: 100vh;
+    margin: auto;
+}
+
+.container-fluid #countdown {
+    position: absolute;
+    margin-left: 33%;
+    top: 4%;
+    color: white;
+    font-size: 16px;
+    border: none;
+    text-align: center;
+}
+
+@font-face {
+    font-family: '!BoH-b';
+    src: url(/dist/fonts/!BoH-b.ttf);
+}
+
+#clockdiv {
+    font-family: "!BoH-b", sans-serif;
+    color: #fff;
+    display: inline-block;
+    font-weight: 100;
+    text-align: center;
+    font-size: 30px;
+    padding: 0;
+}
+
+#clockdiv > div {
+    padding: 10px;
+    display: inline-block;
+}
+
+#clockdiv div > span {
+    display: inline-block;
+}
+
+.smalltext {
+    padding-top: 5px;
+    font-size: 16px;
+}
+
+.container-fluid #countdown h3 {
+    color: orange;
+}
+
+.container-fluid .btn {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    background-color: #555;
+    color: white;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.container-fluid .btn:hover {
+    background-color: orange;
+}
+
+.container-fluid .right_or_bottom {
+    left: 54.5%;
+    width: 9%;
     height: 35.3%!important;
     background-color: transparent;
-    border-bottom-right-radius: 115px;
-    border-top-right-radius: 115px;
+    border-bottom-right-radius: 110px;
+    border-top-right-radius: 110px;
     border: 5px solid white;
     border-left: 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    float: right;
-    position: absolute;
-    margin-top: -38%;
-    margin-left: 50%;
-}
-@media only screen and (max-width: 414px) {
-    .autorotation_r {
-        width: 18%;
-        height: 20.3%!important;
-        margin-top: -98%;
-        transform: rotate(90deg);
-        margin-left: 41%;
-    }
-    .autorotation_r a{
-        display: block;
-        text-align: center;
-        transform: rotate(-90deg);
-        
-    }
+    padding: 0;
 }
 
-.autorotation_l{
-    width: 10%;
+.container-fluid .left_or_top {
+    left: 45.6%;
+    width: 9%;
     height: 35.3%!important;
     background-color: transparent;
-    border-bottom-left-radius: 115px;
-    border-top-left-radius: 115px;
+    border-bottom-left-radius: 110px;
+    border-top-left-radius: 110px;
     border: 5px solid white;
     border-right: 0;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    float: left;
-    position: absolute;
-    margin-top: -38%;
-    margin-left: 40%;
-    color: gold;
+    padding: 0;
+    /*text-align: left;*/
 }
-@media only screen and (max-width: 414px) {
-    .autorotation_l {
+
+@media only screen and (max-width: 320px) {
+    .container-fluid #countdown {
+        position: absolute;
+        margin-left: -2%;
+        /*top: 4%;*/
+    }
+    #clockdiv {
+        font-size: 20px;
+        padding: 0;
+    }
+    .smalltext {
+        padding-top: 0;
+        padding: 0 5px;
+        font-size: 12px;
+    }
+    #clockdiv > div {
+        padding: 0;
+    }
+    .container-fluid .right_or_bottom {
+        top: 40%;
+        left: 41%;
         width: 18%;
         height: 20.3%!important;
-        margin-top: -115.5%;
-        margin-left: 41%;
+        /*margin-top: -98%;*/
+        transform: rotate(90deg);
+        /*margin-left: 41%;*/
+    }
+    .container-fluid .right_or_bottom span {
+        display: inline-block;
+        padding-bottom: 50%;
+        text-align: left;
+        transform: rotate(-90deg);
+
+    }
+
+
+    .container-fluid .left_or_top {
+        top: 30%;
+        left: 41%;
+        width: 18%;
+        height: 20.3%!important;
+        /*margin-top: -115.5%;
+                margin-left: 41%;*/
         transform: rotate(90deg);
     }
-    .autorotation_l a{
-        display: block;
-        text-align: center;
+
+    .container-fluid .left_or_top span {
+        display: inline-block;
+        padding-top: 0;
+        text-align: left;
         transform: rotate(-90deg);
-        margin-top: 25px;
-        
+        /*margin-top: 25px;*/
+    }
+
+}
+
+@media only screen and (min-width: 321px) and (max-width: 480px) {
+    .container-fluid #countdown {
+        position: absolute;
+        margin-left: -15px;
+        /*top: 4%;*/
+    }
+    #clockdiv {
+        font-size: 20px;
+        padding: 0;
+    }
+    .smalltext {
+        padding-top: 0;
+        padding: 0 5px;
+        font-size: 12px;
+    }
+    #clockdiv > div {
+        padding: 0;
+    }
+    .container-fluid .right_or_bottom {
+        top: 40%;
+        left: 41%;
+        width: 18%;
+        height: 20.3%!important;
+        /*margin-top: -98%;*/
+        transform: rotate(90deg)!important;
+        /*margin-left: 41%;*/
+    }
+    .container-fluid .right_or_bottom span {
+        display: inline-block;
+        padding-bottom: 50%;
+        text-align: left;
+        transform: rotate(-90deg);
+
+    }
+
+
+    .container-fluid .left_or_top {
+        top: 30.5%;
+        left: 41%;
+        width: 18%;
+        height: 20.3%!important;
+        /*margin-top: -115.5%;
+                margin-left: 41%;*/
+        transform: rotate(90deg)!important;
+    }
+
+    .container-fluid .left_or_top span {
+        display: inline-block;
+        padding-top: 0;
+        text-align: left;
+        transform: rotate(-90deg);
+        /*margin-top: 25px;*/
+    }
+
+}
+
+@media only screen and (min-width: 481px) and (max-width:640px) {
+    .container-fluid #countdown {
+        position: absolute;
+        margin-left: -15px;
+    }
+    #clockdiv {
+        font-size: 20px;
+        padding: 0;
+    }
+    .smalltext {
+        padding-top: 0;
+        padding: 0 5px;
+        font-size: 12px;
+    }
+    #clockdiv > div {
+        padding: 0;
+    }
+    .container-fluid .right_or_bottom {
+        top: 40%;
+        left: 41%;
+        width: 18%;
+        height: 20.3%!important;
+        /*margin-top: -98%;*/
+        transform: rotate(90deg)!important;
+    }
+    .container-fluid .right_or_bottom span {
+        display: inline-block;
+        padding-bottom: 50%;
+        text-align: left;
+        transform: rotate(-90deg);
+    }
+    .container-fluid .left_or_top {
+        top: 30.5%;
+        left: 41%;
+        width: 18%;
+        height: 20.3%!important;
+        transform: rotate(90deg)!important;
+    }
+
+    .container-fluid .left_or_top span {
+        display: inline-block;
+        padding-top: 0;
+        text-align: left;
+        transform: rotate(-90deg);
     }
 }
