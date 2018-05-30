@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "nigerfoot",
     "version": "0.0.0",
     "private": true,
@@ -33,4 +34,39 @@
         "sanitize-html": "latest",
         "serve-favicon": "latest"
     }
+=======
+  "name": "nigerfoot",
+  "version": "0.0.0",
+  "engines": {
+    "node": "6.11.0"
+  },
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "async": "latest",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "express": "~4.16.0",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.15.6",
+    "express-validator": "^5.0.0",
+    "http-errors": "~1.6.2",
+    "jade": "~1.11.0",
+    "method-override": "^2.3.10",
+    "mongoose": "^5.0.4",
+    "morgan": "~1.9.0",
+    "multer": "latest",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^5.0.0",
+    "path": "latest",
+    "sanitize-html": "latest",
+    "serve-favicon": "latest"
+  }
+>>>>>>> f58f6240db6c0608ecfc6abf65399674ea7c200f
 }
