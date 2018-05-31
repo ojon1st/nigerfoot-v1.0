@@ -7,7 +7,11 @@ html(lang='en')
     meta(name='description', content='Nigerfoot est un site de pronostics gratuit')
     meta(name='keywords', content='Niger, niger, digital, niger digital, pronostics, football, foot, cm18, coupe du monde, 2018')
     meta(name='NIGER DIGITAL', content='hencework')
-    meta(property='og:image', content='/img/login-background.jpg')
+    meta(property='og:url', content='http://www.nigerfoot.com/index')
+    meta(property='og:type', content='webapp')
+    meta(property='og:title', content='Niger FOOT')
+    meta(property='og:description', content='Site de pronostic gratuit pour la coupe du monde')
+    meta(property='og:image', content='http://nigerfoot.com/img/logo-nigerfoot-fbk-share.png')
     // Favicon
     link(rel='shortcut icon', href='/favicon.ico')
     link(rel='icon', href='favicon.ico', type='image/x-icon')
@@ -73,9 +77,22 @@ html(lang='en')
                                   }(document, 'script', 'facebook-jssdk'));
                             .fb-like(data-href='https://nigerfoot.com', data-layout='button_count', data-action='like', data-size='large', data-show-faces='true', data-share='true')
                             
-                            a.twitter-share-button(href='<a class="vglnk" href="https://twitter.com/share" rel="nofollow"><span>https</span><span>://</span><span>twitter</span><span>.</span><span>com</span><span>/</span><span>share</span></a>', data-hashtags='NigerFoot #CM18 #Russie2018', data-via='NigerFoot', data-count='horizontal') Tweet
+                            a.twitter-share-button(href='https://twitter.com/intent/tweet?text=Venez%20jouer%20sur%20NigerFoot', data-size='large' data-hashtags='NigerFoot #CM18 #Russie2018', data-via='NigerFoot', data-count='horizontal') Tweet
                             script.
-                              !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
+                              window.twttr = (function(d, s, id) {
+                              var js, fjs = d.getElementsByTagName(s)[0],
+                              t = window.twttr || {};
+                              if (d.getElementById(id)) return t;
+                              js = d.createElement(s);
+                              js.id = id;
+                              js.src = "https://platform.twitter.com/widgets.js";
+                              fjs.parentNode.insertBefore(js, fjs);
+                              t._e = [];
+                              t.ready = function(f) {
+                              t._e.push(f);
+                              };
+                              return t;
+                              }(document, "script", "twitter-wjs"));
 
                             
                             label(class='userid' data-userid='#{user._id}' hidden='')
