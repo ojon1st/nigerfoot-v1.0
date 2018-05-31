@@ -11,7 +11,7 @@ var LocalStrategy = require('passport-local').Strategy;
 var flash = require('connect-flash');
 var bcrypt = require('bcryptjs');
 
-
+require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -26,9 +26,6 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 var app = express();
 
-if (app.get('env') == 'development'){ 
-    require('dotenv').config();
-}
 app.use(session({
   secret: 'ungrainderizsemécentrécoltés',
   resave: false,
