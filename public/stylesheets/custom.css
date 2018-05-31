@@ -215,6 +215,7 @@
         height: 20.3%!important;
         /*margin-top: -98%;*/
         transform: rotate(90deg)!important;
+        -moz-transform : rotate(90deg);
         /*margin-left: 41%;*/
     }
     .container-fluid .right_or_bottom span {
@@ -222,7 +223,7 @@
         padding-bottom: 50%;
         text-align: left;
         transform: rotate(-90deg);
-
+        -moz-transform : rotate(-90deg);
     }
 
 
@@ -234,6 +235,7 @@
         /*margin-top: -115.5%;
                 margin-left: 41%;*/
         transform: rotate(90deg)!important;
+        -moz-transform : rotate(90deg);
     }
 
     .container-fluid .left_or_top span {
@@ -241,6 +243,7 @@
         padding-top: 0;
         text-align: left;
         transform: rotate(-90deg);
+        -moz-transform : rotate(-90deg);
         /*margin-top: 25px;*/
     }
 
