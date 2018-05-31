@@ -30,7 +30,7 @@ block content
                       form(method='POST' action='')
                         .form-group
                           label.control-label.mb-10(for='') Prénom & Nom
-                          input.form-control(type='text', required='true', name='username', placeholder='Nom et Prénom' value=(undefined===user ? '' : user.username))
+                          input.form-control(type='text', required='true', name='username', placeholder='Prénom & Nom' value=(undefined===user ? '' : user.username))
                         .form-group
                           label.control-label.mb-10(for='') Téléphone
                           input.form-control(type='tel', required='true', name='userphone', minlength='8' maxlength='8', placeholder='8 chiffres Ex: 85 90 89 93' value=(undefined===user ? '' : user.userphone))

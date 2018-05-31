@@ -46,10 +46,10 @@ html(lang='en')
             source(media='(min-width: 414px)', srcset='img/login-background.jpg')
             img.center-fit(src='img/login-background.jpg', alt='')
           // <img class='center-fit' src="img/login-background.jpg" alt="">
-        button.btn.right_or_bottom
+        button.btn.right_or_bottom(onclick="window.location='/login'")
           span 
             a(class='txt-light' href='login') Connexion
-        button.btn.left_or_top
+        button.btn.left_or_top(onclick="window.location='/register'")
           span 
             a(class='txt-light' href='register') Nouveau
       // Footer
