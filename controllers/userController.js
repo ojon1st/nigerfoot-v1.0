@@ -1341,14 +1341,14 @@ exports.update_score_post = [
                         }
 
                         // Mauvais résultat
-                        if (scenario > 0 && user_scenario < 0) {
+                        if (scenario > 0 && user_scenario <= 0) {
 
                             theuser.userscore = mon_score_actuel + low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
                         // Mauvais résultat
-                        if (user_scenario > 0 && scenario < 0) {
+                        if (user_scenario > 0 && scenario <= 0) {
                             theuser.userscore = mon_score_actuel + low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
