@@ -30,7 +30,7 @@ block content
                       form(method='POST' action='')
                         .form-group
                           label.control-label.mb-10(for='') Pseudo
-                          input#exampleInputEmail_2.form-control(type='text', required='true', name='userpseudo' placeholder='Pseudo')
+                          input#noSpacesField.form-control(type='text', required='true', name='userpseudo' placeholder='Pseudo')
                         .form-group
                           label.pull-left.control-label.mb-10(for='') Mot de passe
                           a.capitalize-font.txt-primary.block.mb-10.pull-right.font-12(href='forgotpassword') Mot de Passe oublié ?
@@ -44,5 +44,12 @@ block content
                         .form-group.text-center
                           button.btn.btn-success.btn-rounded(type='submit') Valider
       // /Row
-  // /Main Content
-// /#wrapper
+      // /Main Content
+      // /#wrapper
+  script(src='https://code.jquery.com/jquery-1.8.3.min.js', integrity='sha256-YcbK69I5IXQftf/mYD8WY0/KmEDCv1asggHpJk1trM8=', crossorigin='anonymous')                      
+  script(type='text/javascript').
+    $('#noSpacesField').bind('input', function(){
+      $(this).val(function(_, v){
+       return v.replace(/\s+/g, '').toLowerCase();
+      });
+    });
