@@ -55,7 +55,9 @@ exports.user_profile_get = function (req, res, next) {
                     path: 'team2',
                     select: ['teamname', 'teamgroup']
                 })
-                .sort('gamenumber')
+                .sort({
+                    gamedate: 1
+                })
                 .exec(callback);
         },
         teams: function (callback) {
@@ -101,19 +103,16 @@ exports.user_profile_get = function (req, res, next) {
             }).exec(callback);
         },
         rankmax: function (callback) {
-            Rank.findOne()
-                .sort({
-                    rankaftergame: -1
-                })
-                .exec(callback);
+            Rank.find({}).sort({'_id':-1}).limit(1).exec(callback);
         }
     }, function (err, results) {
         if (err) {
             return next(err);
         }
+      //console.log(results.rankmax[0]['rankstate']); return
         async.parallel({
             myrank: function (callback) {
-                results.rankmax.rankstate.forEach(function (theuser) {
+                results.rankmax[0].rankstate.forEach(function (theuser) {
                     
                     if (theuser.usrid.toString() == req.user._id) {
                         myrank = theuser;
@@ -169,7 +168,7 @@ exports.user_profile_get = function (req, res, next) {
                             var newarray = [];
                             newarray = resultats.mongroupeusersarray;
                             var newstring = '';
-                            results.rankmax.rankstate.forEach(function (theuser) {
+                            results.rankmax[0].rankstate.forEach(function (theuser) {
                                 newstring = theuser.usrid.toString();
 
                                 if (newarray.includes(newstring)) {
@@ -191,7 +190,7 @@ exports.user_profile_get = function (req, res, next) {
                                 var thisgroupusersarray = mesgroupesusersarray[i];
                                 var thisgroupclassarray = [];
                                 var newstring = '';
-                                results.rankmax.rankstate.forEach(function (theuser) {
+                                results.rankmax[0].rankstate.forEach(function (theuser) {
                                     newstring = theuser.usrid.toString();
 
                                     if (thisgroupusersarray.includes(newstring)) {
@@ -221,7 +220,7 @@ exports.user_profile_get = function (req, res, next) {
                     list_users: results.users,
                     groupes: results.groupes.joinedGroups,
                     mongroupe: results.groupe,
-                    rankmax: results.rankmax,
+                    rankmax: results.rankmax[0],
                     myrank: resultats.myrank,
                     groupesranks: resultat_final.allmygroupsranks,
                     mongrouperank: resultat_final.mygrouperank
@@ -1079,7 +1078,7 @@ exports.classement_get = function (req, res, next) {
                     started: 'false'
                 })
                 .sort({
-                    gamenumber: 1
+                    gamedate: 1
                 })
                 .exec(callback);
         },
@@ -1088,28 +1087,32 @@ exports.classement_get = function (req, res, next) {
                     started: 'true'
                 })
                 .sort({
-                    gamenumber: -1
+                    gamedate: -1
                 })
                 .exec(callback);
         },
         rankmax: function (callback) {
-            Rank.findOne({}, {
-                    rankaftergame: 1
-                })
-                .sort({
-                    rankaftergame: -1
-                })
+            Rank.find()
+                .sort({'_id':-1}).limit(1)
                 .exec(callback);
         },
+       rankstates:function (callback){
+         Rank.find().exec(callback);
+       }
     }, function (err, results) {
         if (err) {
             return next(err);
         }
+        var games_ranked = [];
+        results.rankstates.forEach(function(game_ranked){
+          games_ranked.push(game_ranked.rankaftergame)
+        })
         res.render('classement', {
             title: 'Manage Classement',
             games_not_started: results.games_not_started,
             games_started: results.games_started,
-            rankmax: results.rankmax
+            rankmax: results.rankmax[0],
+            games_ranked: games_ranked
         });
     });
 };
@@ -1281,32 +1284,35 @@ exports.update_score_post = [
             }
 
             User.find({}, function (err, users) {
+                if (err){
+                  return next(err);
+                }
                 users.forEach(function (theuser) {
                     if (theuser.userprono['prteam' + results.game.gamenumber + '1'] != null && theuser.userprono['prteam' + results.game.gamenumber + '1'] != 'undefined' && theuser.userprono['prteam' + results.game.gamenumber + '2'] != null && theuser.userprono['prteam' + results.game.gamenumber + '2'] != 'undefined') {
-                        console.log(theuser.userpseudo)
+                        //console.log(theuser.userpseudo)
                         var uprteam1 = theuser.userprono['prteam' + results.game.gamenumber + '1'];
                         var uprteam2 = theuser.userprono['prteam' + results.game.gamenumber + '2'];
-
+                        
                         var user_scenario = theuser.userprono['prteam' + results.game.gamenumber + '1'] - theuser.userprono['prteam' + results.game.gamenumber + '2'];
-
-                        var mon_score_actuel = theuser.userscore;
+                        
+                        //var mon_score_actuel = theuser.userscore;
                         // Match nul
                         if (scenario == 0 && user_scenario == 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
                                 // Bon score
-                                theuser.userscore = mon_score_actuel + max_points;
+                                theuser.userscore += max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
                                 // Bon résultat
-                                theuser.userscore = mon_score_actuel + middle_points;
+                                theuser.userscore += middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
                         }
 
                         if (scenario == 0 && user_scenario != 0) {
-                            theuser.userscore = mon_score_actuel + low_points;
+                            theuser.userscore += low_points;
                             theuser.save();
                         }
 
@@ -1314,12 +1320,12 @@ exports.update_score_post = [
                         if (scenario > 0 && user_scenario > 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
                                 // Bon score
-                                theuser.userscore = mon_score_actuel + max_points;
+                                theuser.userscore += max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
                                 // Bon résultat
-                                theuser.userscore = mon_score_actuel + middle_points;
+                                theuser.userscore += middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
@@ -1329,12 +1335,12 @@ exports.update_score_post = [
                         if (scenario < 0 && user_scenario < 0) {
                             if (grteam1 == uprteam1 && grteam2 == uprteam2) {
                                 // Bon score
-                                theuser.userscore = mon_score_actuel + max_points;
+                                theuser.userscore += max_points;
                                 theuser.save();
                                 //console.log('score exact: 1000 points')
                             } else {
                                 // Bon résultat
-                                theuser.userscore = mon_score_actuel + middle_points;
+                                theuser.userscore += middle_points;
                                 theuser.save();
                                 //console.log('résultat exact, score non-exact: 600 points')
                             }
@@ -1343,20 +1349,20 @@ exports.update_score_post = [
                         // Mauvais résultat
                         if (scenario > 0 && user_scenario <= 0) {
 
-                            theuser.userscore = mon_score_actuel + low_points;
+                            theuser.userscore += low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
                         // Mauvais résultat
-                        if (user_scenario > 0 && scenario <= 0) {
-                            theuser.userscore = mon_score_actuel + low_points;
+                        if (user_scenario >= 0 && scenario < 0) {
+                            theuser.userscore += low_points;
                             theuser.save();
                             //console.log('résultat perdu: 250 points')
                         }
 
                         //console.log('user_scenario:' + user_scenario)
                     }
-
+                    return
                 });
             });
 
@@ -1504,3 +1510,31 @@ passport.use(new LocalStrategy({
             });
         })
 }));
+
+//
+/*exports.reset_scores_post = [
+     // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        async.parallel({
+            users: function (callback) {
+                User.find({}, {
+                    _id: 1,
+                    userpseudo: 1,
+                    userscore: 1
+                }).exec(callback);
+            },
+        }, function (err, results) {
+            if (err) {
+                return next(err);
+            }
+      results.users.forEach(function (theuser) {
+        
+        theuser.userscore = 0;
+        theuser.save();
+
+      });
+      return
+    })
+    }
+];*/
