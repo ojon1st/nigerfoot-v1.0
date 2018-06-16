@@ -146,7 +146,7 @@ html(lang='en')
                                 select.form-control(type='select', name='gamenumber_for_rank', data-style='btn-primary btn-outline')
                                   for gamex in games_started
                                     if (rankmax)
-                                      if (gamex.started == true && gamex.gamenumber > rankmax.rankaftergame)
+                                      if (!games_ranked.includes(gamex.gamenumber))
                                         option(value=gamex.gamenumber) #{gamex.gamenumber}
                                     else
                                       option(value=gamex.gamenumber) #{gamex.gamenumber}
@@ -154,6 +154,9 @@ html(lang='en')
                             .form-group.col-sm-4.col-sm-offset-4.col-xs-12
                               label.control-label.mb-10 Générer le classement
                               button.form-control.btn.btn-success.mr-10(type='submit') Submit
+            //.col-md-6
+              form(method='POST' action='/users/reset_scores')
+                button.form-control.btn.btn-success.mr-10(type='submit') Submit
           // /Row
         // Footer
         footer.footer.container-fluid.pl-30.pr-30
