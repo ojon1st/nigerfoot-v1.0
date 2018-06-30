@@ -342,7 +342,23 @@ exports.prono_update_post = [ // Validate that the name field is not empty.
                 prteam471: req.body.prteam471,
                 prteam472: req.body.prteam472,
                 prteam481: req.body.prteam481,
-                prteam482: req.body.prteam482
+                prteam482: req.body.prteam482,
+                prteam491:req.body.prteam491,
+prteam492:req.body.prteam492,
+prteam501:req.body.prteam501,
+prteam502:req.body.prteam502,
+prteam511:req.body.prteam511,
+prteam512:req.body.prteam512,
+prteam521:req.body.prteam521,
+prteam522:req.body.prteam522,
+prteam531:req.body.prteam531,
+prteam532:req.body.prteam532,
+prteam541:req.body.prteam541,
+prteam542:req.body.prteam542,
+prteam551:req.body.prteam551,
+prteam552:req.body.prteam552,
+prteam561:req.body.prteam561,
+prteam562:req.body.prteam562
             }
         });
 
@@ -457,7 +473,23 @@ exports.prono_update_post = [ // Validate that the name field is not empty.
                     "userprono.prteam471": req.body.prteam471,
                     "userprono.prteam472": req.body.prteam472,
                     "userprono.prteam481": req.body.prteam481,
-                    "userprono.prteam482": req.body.prteam482
+                    "userprono.prteam482": req.body.prteam482,
+                    "userprono.prteam491": req.body.prteam491,
+                    "userprono.prteam492": req.body.prteam492,
+                    "userprono.prteam501": req.body.prteam501,
+                    "userprono.prteam502": req.body.prteam502,
+                    "userprono.prteam511": req.body.prteam511,
+                    "userprono.prteam512": req.body.prteam512,
+                    "userprono.prteam521": req.body.prteam521,
+                    "userprono.prteam522": req.body.prteam522,
+                    "userprono.prteam531": req.body.prteam531,
+                    "userprono.prteam532": req.body.prteam532,
+                    "userprono.prteam541": req.body.prteam541,
+                    "userprono.prteam542": req.body.prteam542,
+                    "userprono.prteam551": req.body.prteam551,
+                    "userprono.prteam552": req.body.prteam552,
+                    "userprono.prteam561": req.body.prteam561,
+                    "userprono.prteam562": req.body.prteam562
                 }
             }, {
                 upsert: true,
