@@ -56,8 +56,8 @@ exports.user_profile_get = function (req, res, next) {
                     select: ['teamname', 'teamgroup']
                 })
                 .sort({
-                    gamedate: 1,
-                    gametype: 1
+                    gametype: 1,
+                    gamedate: 1
                 })
                 .exec(callback);
         },
