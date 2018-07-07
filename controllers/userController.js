@@ -366,7 +366,11 @@ exports.prono_update_post = [ // Validate that the name field is not empty.
                 prteam591:req.body.prteam591,
                 prteam592:req.body.prteam592,
                 prteam601:req.body.prteam601,
-                prteam602:req.body.prteam602
+                prteam602:req.body.prteam602,
+                prteam611:req.body.prteam611,
+                prteam612:req.body.prteam612,
+                prteam621:req.body.prteam621,
+                prteam622:req.body.prteam622
             }
         });
 
@@ -505,7 +509,11 @@ exports.prono_update_post = [ // Validate that the name field is not empty.
                     "userprono.prteam591": req.body.prteam591,
                     "userprono.prteam592": req.body.prteam592,
                     "userprono.prteam601": req.body.prteam601,
-                    "userprono.prteam602": req.body.prteam602
+                    "userprono.prteam602": req.body.prteam602,
+                    "userprono.prteam611": req.body.prteam611,
+                    "userprono.prteam612": req.body.prteam612,
+                    "userprono.prteam621": req.body.prteam621,
+                    "userprono.prteam622": req.body.prteam622
                 }
             }, {
                 upsert: true,
