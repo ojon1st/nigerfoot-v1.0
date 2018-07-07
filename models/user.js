@@ -137,7 +137,11 @@ const UserSchema = new Schema({
           prteam591:{type:Number},
           prteam592:{type:Number},
           prteam601:{type:Number},
-          prteam602:{type:Number}}
+          prteam602:{type:Number},
+          prteam611:{type:Number},
+          prteam612:{type:Number},
+          prteam621:{type:Number},
+          prteam622:{type:Number}}
     
 });
 
